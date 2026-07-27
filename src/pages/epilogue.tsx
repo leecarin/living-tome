@@ -160,7 +160,7 @@ export default function EpiloguePage() {
                                             <span className="h-px flex-1 bg-[rgba(67,42,20,0.18)]" />
                                             Open leaf
                                         </div>
-                                        <p className="max-w-[24rem] whitespace-pre-line text-[1.15rem] leading-9 text-[rgba(41,22,11,0.92)] sm:text-[1.3rem] sm:leading-[2.4rem]">
+                                        <p className="max-w-[28rem] whitespace-pre-line text-[1.15rem] leading-9 text-[rgba(41,22,11,0.92)] sm:text-[1.3rem] sm:leading-[2.4rem]">
                                             {leftText}
                                         </p>
                                     </div>
@@ -183,7 +183,7 @@ export default function EpiloguePage() {
                                             initial={{ opacity: 0.86 }}
                                             animate={{ opacity: 1 }}
                                             transition={{ duration: 0.2 }}
-                                            className="max-w-[24rem] whitespace-pre-line text-[1.15rem] leading-9 text-[rgba(41,22,11,0.92)] sm:text-[1.3rem] sm:leading-[2.4rem]"
+                                            className="max-w-[28rem] whitespace-pre-line text-[1.15rem] leading-9 text-[rgba(41,22,11,0.92)] sm:text-[1.3rem] sm:leading-[2.4rem]"
                                         >
                                             {rightText}
                                         </motion.p>
