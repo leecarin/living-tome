@@ -1,7 +1,7 @@
 import Head from "next/head";
 import { useEffect, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
-import { Charm, Nothing_You_Could_Do } from "next/font/google";
+import { Nothing_You_Could_Do } from "next/font/google";
 import {
     LETTER_REVEAL_BASE_DELAY_MS,
     LETTER_REVEAL_INITIAL_DELAY_MS,
@@ -128,7 +128,7 @@ export default function EpiloguePage() {
             </Head>
 
             <main
-                className={`relative min-h-screen overflow-hidden px-4 py-8 text-[var(--foreground)] sm:px-6 lg:px-8`}
+                className={`relative min-h-screen overflow-hidden px-4 py-8 text-foreground sm:px-6 lg:px-8`}
             >
                 <motion.div
                     className="mx-auto w-full max-w-6xl"
@@ -136,13 +136,13 @@ export default function EpiloguePage() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
                 >
-                    <div className="mb-5 flex items-center justify-between gap-4 px-1 text-[0.68rem] uppercase tracking-[0.48em] text-[var(--foreground-soft)]">
+                    <div className="mb-5 flex items-center justify-between gap-4 px-1 text-[0.68rem] uppercase tracking-[0.48em] text-foreground-soft">
                         <span>{chapterTitle}</span>
 
                         <div className="flex items-center gap-4">
                             <motion.button
                                 type="button"
-                                className="rounded-full border border-[rgba(67,42,20,0.18)] bg-[rgba(255,252,246,0.78)] px-4 py-2 text-[0.68rem] uppercase tracking-[0.3em] text-[rgba(50,30,16,0.82)] shadow-[0_8px_24px_rgba(73,41,18,0.12)] backdrop-blur-sm transition-colors hover:bg-[rgba(255,255,255,0.92)]"
+                                className="rounded-full border border-[#c2b293] bg-[#f5ede0] px-4 py-2 text-[0.68rem] uppercase tracking-[0.3em] text-[#4a3828] shadow-sm backdrop-blur-sm transition-colors hover:bg-white"
                                 onClick={() => setCycle((value) => value + 1)}
                                 whileHover={
                                     prefersReducedMotion ? undefined : { y: -2 }
@@ -158,8 +158,9 @@ export default function EpiloguePage() {
                         </div>
                     </div>
 
+                    {/* Dark Gray Outer Tome Cover */}
                     <motion.section
-                        className="relative overflow-hidden rounded-[2.4rem] border border-[rgba(95,58,30,0.85)] bg-[linear-gradient(180deg,rgba(43,23,12,0.98),rgba(21,11,6,0.98))] p-3 shadow-[0_48px_140px_rgba(0,0,0,0.66)] ring-1 ring-black/40 sm:p-4"
+                        className="relative overflow-hidden rounded-[2.4rem] border border-slate-700/80 bg-[linear-gradient(180deg,rgba(30,41,59,0.98),rgba(15,23,42,0.98))] p-3 shadow-[0_48px_140px_rgba(0,0,0,0.7)] ring-1 ring-black/50 sm:p-4"
                         whileHover={
                             prefersReducedMotion
                                 ? undefined
@@ -171,22 +172,23 @@ export default function EpiloguePage() {
                             damping: 22,
                         }}
                     >
-                        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.08),transparent_42%)]" />
-                        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(0,0,0,0.06),transparent_16%,transparent_84%,rgba(0,0,0,0.12))]" />
-                        <div className="pointer-events-none absolute inset-y-0 left-1/2 w-12 -translate-x-1/2 bg-[linear-gradient(to_right,rgba(74,49,25,0.95),rgba(29,16,8,0.92),rgba(74,49,25,0.95))] shadow-[0_0_28px_rgba(0,0,0,0.42)]" />
-                        <div className="pointer-events-none absolute inset-y-3 left-1/2 w-[1px] -translate-x-1/2 bg-[rgba(255,237,206,0.18)]" />
+                        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.06),transparent_42%)]" />
+                        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(0,0,0,0.08),transparent_16%,transparent_84%,rgba(0,0,0,0.15))]" />
+                        <div className="pointer-events-none absolute inset-y-0 left-1/2 w-12 -translate-x-1/2 bg-[linear-gradient(to_right,rgba(30,41,59,0.95),rgba(15,23,42,0.92),rgba(30,41,59,0.95))] shadow-[0_0_28px_rgba(0,0,0,0.5)]" />
+                        <div className="pointer-events-none absolute inset-y-3 left-1/2 w-[1px] -translate-x-1/2 bg-[rgba(226,232,240,0.18)]" />
 
-                        <div className="grid gap-0 overflow-hidden rounded-[1.8rem] border border-[rgba(255,240,206,0.12)] bg-[linear-gradient(180deg,rgba(80,52,29,0.18),rgba(35,21,12,0.08))] shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] lg:grid-cols-[1fr_1fr]">
-                            <div className="relative min-h-[31rem] overflow-hidden bg-[linear-gradient(180deg,rgba(244,227,194,0.98),rgba(227,201,158,0.97))] px-5 py-6 text-[var(--ink)] shadow-[inset_-14px_0_28px_rgba(116,74,35,0.12),inset_0_1px_0_rgba(255,255,255,0.55)] sm:px-8 sm:py-8">
-                                <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_15%_12%,rgba(255,255,255,0.22),transparent_26%),linear-gradient(90deg,rgba(111,74,34,0.08),transparent_10%,transparent_90%,rgba(111,74,34,0.06))] opacity-80" />
+                        {/* Yellow Parchment Pages */}
+                        <div className="grid gap-0 overflow-hidden rounded-[1.8rem] border border-[#d8caae]/60 bg-[#eedebf] shadow-[inset_0_1px_0_rgba(255,255,255,0.4)] lg:grid-cols-[1fr_1fr]">
+                            <div className="relative min-h-[31rem] overflow-hidden bg-[linear-gradient(180deg,#fbf7ee,#f2e9d8)] px-5 py-6 text-ink shadow-[inset_-14px_0_28px_rgba(72,52,32,0.08),inset_0_1px_0_rgba(255,255,255,0.8)] sm:px-8 sm:py-8">
+                                <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_15%_12%,rgba(255,255,255,0.45),transparent_26%),linear-gradient(90deg,rgba(110,80,45,0.05),transparent_10%,transparent_90%,rgba(110,80,45,0.04))] opacity-80" />
                                 <div className="relative flex h-full flex-col justify-between gap-8">
                                     <div className="space-y-5">
-                                        <div className="flex items-center gap-3 text-[0.66rem] uppercase tracking-[0.4em] text-[rgba(67,42,20,0.62)]">
-                                            <span className="h-px flex-1 bg-[rgba(67,42,20,0.18)]" />
+                                        <div className="flex items-center gap-3 text-[0.66rem] uppercase tracking-[0.4em] text-[#8c7457]">
+                                            <span className="h-px flex-1 bg-[#cfbe9e]" />
                                             Epilogue
                                         </div>
                                         <p
-                                            className={`${bodyFont.className} max-w-[28rem] whitespace-pre-line text-[1.5rem] leading-9 text-[rgba(41,22,11,0.92)] sm:text-[1.3rem] sm:leading-[2.8rem]`}
+                                            className={`${bodyFont.className} max-w-[28rem] whitespace-pre-line text-[1.5rem] leading-9 text-[#24170d] sm:text-[1.3rem] sm:leading-[2.8rem]`}
                                         >
                                             {leftText}
                                         </p>
@@ -194,12 +196,12 @@ export default function EpiloguePage() {
                                 </div>
                             </div>
 
-                            <div className="relative min-h-[31rem] overflow-hidden bg-[linear-gradient(180deg,rgba(241,226,190,0.98),rgba(226,201,156,0.98))] px-5 py-6 text-[var(--ink)] shadow-[inset_14px_0_28px_rgba(116,74,35,0.1),inset_0_1px_0_rgba(255,255,255,0.54)] sm:px-8 sm:py-8">
-                                <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_80%_16%,rgba(255,255,255,0.18),transparent_24%),linear-gradient(90deg,rgba(111,74,34,0.06),transparent_12%,transparent_88%,rgba(111,74,34,0.08))] opacity-80" />
+                            <div className="relative min-h-[31rem] overflow-hidden bg-[linear-gradient(180deg,#fbf7ee,#ece2cc)] px-5 py-6 text-ink shadow-[inset_14px_0_28px_rgba(72,52,32,0.07),inset_0_1px_0_rgba(255,255,255,0.8)] sm:px-8 sm:py-8">
+                                <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_80%_16%,rgba(255,255,255,0.35),transparent_24%),linear-gradient(90deg,rgba(110,80,45,0.04),transparent_12%,transparent_88%,rgba(110,80,45,0.06))] opacity-80" />
                                 <div className="relative flex h-full flex-col justify-between gap-8">
                                     <div className="space-y-5">
-                                        <div className="flex items-center gap-3 text-[0.66rem] uppercase tracking-[0.4em] text-[rgba(67,42,20,0.62)]">
-                                            <span className="h-px flex-1 bg-[rgba(67,42,20,0.18)]" />
+                                        <div className="flex items-center gap-3 text-[0.66rem] uppercase tracking-[0.4em] text-[#8c7457]">
+                                            <span className="h-px flex-1 bg-[#cfbe9e]" />
                                             Epilogue
                                         </div>
                                         <motion.p
@@ -207,7 +209,7 @@ export default function EpiloguePage() {
                                             initial={{ opacity: 0.86 }}
                                             animate={{ opacity: 1 }}
                                             transition={{ duration: 0.2 }}
-                                            className={`${bodyFont.className} max-w-[28rem] whitespace-pre-line text-[1.5rem] leading-9 text-[rgba(41,22,11,0.92)] sm:text-[1.3rem] sm:leading-[2.4rem]`}
+                                            className={`${bodyFont.className} max-w-[28rem] whitespace-pre-line text-[1.5rem] leading-9 text-[#24170d] sm:text-[1.3rem] sm:leading-[2.4rem]`}
                                         >
                                             {rightText}
                                         </motion.p>

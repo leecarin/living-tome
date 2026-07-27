@@ -1,16 +1,31 @@
 @import "tailwindcss";
 
 :root {
-    --background: #090602;
-    --foreground: #f4e7cc;
-    --foreground-soft: #d9c29c;
+    --background: #090a0f;
+    --foreground: #f8fafc;
+    --foreground-soft: #cbd5e1;
+
+    /* Ink on the book pages */
     --ink: #2a1a0f;
-    --ember: #e6a14a;
+
+    /* Gothic accent colours */
+    --ember: #b91c1c;
+    --blood: #881337;
+    --mist: #94a3b8;
+    --moonlight: #e2e8f0;
+    --gold: #d97706;
 }
 
-@theme inline {
+@theme {
     --color-background: var(--background);
     --color-foreground: var(--foreground);
+    --color-foreground-soft: var(--foreground-soft);
+    --color-ink: var(--ink);
+    --color-ember: var(--ember);
+    --color-blood: var(--blood);
+    --color-mist: var(--mist);
+    --color-moonlight: var(--moonlight);
+    --color-gold: var(--gold);
 }
 
 html {
@@ -26,47 +41,50 @@ body {
     font-family: Georgia, "Times New Roman", serif;
 }
 
+/* Texture Layer: Muted dot grid pattern instead of broad center lighting */
 body::before {
     content: "";
     position: fixed;
     inset: 0;
     pointer-events: none;
-    background:
-        radial-gradient(
-            circle at top,
-            rgba(255, 214, 156, 0.16),
-            transparent 40%
-        ),
-        radial-gradient(
-            circle at 20% 20%,
-            rgba(255, 255, 255, 0.06),
-            transparent 24%
-        ),
-        radial-gradient(
-            circle at 80% 0%,
-            rgba(109, 59, 24, 0.34),
-            transparent 28%
-        ),
-        linear-gradient(
-            to bottom,
-            rgba(255, 255, 255, 0.02),
-            rgba(0, 0, 0, 0.1)
-        );
-    mix-blend-mode: screen;
-    opacity: 0.9;
+    background-image:
+        radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.7));
+    background-size:
+        24px 24px,
+        100% 100%;
+    background-position:
+        0 0,
+        0 0;
+    opacity: 0.6;
 }
 
+/* Atmosphere Layer: Pushes subtle colored accents strictly to the screen corners */
 body::after {
     content: "";
     position: fixed;
     inset: 0;
     pointer-events: none;
-    background: radial-gradient(
-        circle at center,
-        transparent 38%,
-        rgba(0, 0, 0, 0.42) 100%
-    );
-    opacity: 0.7;
+    background: 
+        /* Crimson accent strictly top-right */
+        radial-gradient(
+            circle at 100% 0%,
+            rgba(136, 19, 55, 0.25) 0%,
+            transparent 40%
+        ),
+        /* Cool moonlight accent strictly top-left */
+        radial-gradient(
+                circle at 0% 0%,
+                rgba(148, 163, 184, 0.12) 0%,
+                transparent 35%
+            ),
+        /* Deep edge vignette */
+        radial-gradient(
+                circle at 50% 50%,
+                transparent 50%,
+                rgba(0, 0, 0, 0.8) 100%
+            );
+    opacity: 0.9;
 }
 
 * {
@@ -74,6 +92,6 @@ body::after {
 }
 
 ::selection {
-    background: rgba(230, 161, 74, 0.36);
-    color: #fff5e5;
+    background: rgba(185, 28, 28, 0.55);
+    color: #ffffff;
 }

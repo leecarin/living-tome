@@ -96,7 +96,7 @@ export default function Home() {
             </Head>
 
             <main
-                className={`${bodyFont.className} relative min-h-screen overflow-hidden text-[var(--foreground)]`}
+                className={`${bodyFont.className} relative min-h-screen overflow-hidden text-foreground`}
             >
                 <motion.div
                     aria-hidden="true"
@@ -105,7 +105,7 @@ export default function Home() {
                     animate={{ opacity: 1 }}
                 >
                     <motion.div
-                        className="absolute left-[-12%] top-[-16%] h-[28rem] w-[28rem] rounded-full bg-[radial-gradient(circle,rgba(214,153,83,0.28),transparent_68%)] blur-3xl"
+                        className="absolute left-[-12%] top-[-16%] h-[28rem] w-[28rem] rounded-full bg-[radial-gradient(circle,rgba(148,163,184,0.18),transparent_68%)] blur-3xl"
                         animate={{
                             x: [0, 28, 0],
                             y: [0, 18, 0],
@@ -118,7 +118,7 @@ export default function Home() {
                         }}
                     />
                     <motion.div
-                        className="absolute right-[-10%] top-[8%] h-[24rem] w-[24rem] rounded-full bg-[radial-gradient(circle,rgba(83,45,20,0.38),transparent_72%)] blur-3xl"
+                        className="absolute right-[-10%] top-[8%] h-[24rem] w-[24rem] rounded-full bg-[radial-gradient(circle,rgba(51,65,85,0.38),transparent_72%)] blur-3xl"
                         animate={{
                             x: [0, -24, 0],
                             y: [0, 20, 0],
@@ -131,7 +131,7 @@ export default function Home() {
                         }}
                     />
                     <motion.div
-                        className="absolute inset-x-0 bottom-0 h-[45vh] bg-[linear-gradient(to_top,rgba(7,4,2,0.9),rgba(7,4,2,0.18),transparent)]"
+                        className="absolute inset-x-0 bottom-0 h-[45vh] bg-[linear-gradient(to_top,rgba(5,7,12,0.9),rgba(5,7,12,0.18),transparent)]"
                         animate={{ opacity: [0.66, 0.92, 0.66] }}
                         transition={{
                             duration: 8,
@@ -148,16 +148,17 @@ export default function Home() {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
                     >
-                        <div className="mb-5 flex flex-wrap items-center justify-between gap-4 px-2 text-[0.7rem] uppercase tracking-[0.45em] text-[var(--foreground-soft)] sm:px-4">
+                        <div className="mb-5 flex flex-wrap items-center justify-between gap-4 px-2 text-[0.7rem] uppercase tracking-[0.45em] text-foreground-soft sm:px-4">
                             <div className="flex items-center gap-3">
-                                <span className="h-2 w-2 rounded-full bg-[var(--ember)] shadow-[0_0_18px_rgba(232,162,85,0.95)]" />
+                                <span className="h-2 w-2 rounded-full bg-ember shadow-[0_0_18px_var(--ember)]" />
                                 <span>Archive VI</span>
                             </div>
                             <span>Open a leaf to reveal the chapter</span>
                         </div>
 
+                        {/* Outer Dark Gray Cover */}
                         <motion.div
-                            className="relative overflow-hidden rounded-[2.4rem] border border-[rgba(95,58,30,0.85)] bg-[linear-gradient(180deg,rgba(43,23,12,0.98),rgba(21,11,6,0.98))] p-3 shadow-[0_48px_140px_rgba(0,0,0,0.66)] ring-1 ring-black/40 sm:p-4"
+                            className="relative overflow-hidden rounded-[2.4rem] border border-slate-700/80 bg-[linear-gradient(180deg,rgba(30,41,59,0.98),rgba(15,23,42,0.98))] p-3 shadow-[0_48px_140px_rgba(0,0,0,0.7)] ring-1 ring-black/50 sm:p-4"
                             whileHover={
                                 prefersReducedMotion
                                     ? undefined
@@ -169,35 +170,34 @@ export default function Home() {
                                 damping: 22,
                             }}
                         >
-                            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.08),transparent_42%)]" />
-                            <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(0,0,0,0.06),transparent_16%,transparent_84%,rgba(0,0,0,0.12))]" />
-                            <div className="pointer-events-none absolute inset-y-0 left-1/2 w-12 -translate-x-1/2 bg-[linear-gradient(to_right,rgba(74,49,25,0.95),rgba(29,16,8,0.92),rgba(74,49,25,0.95))] shadow-[0_0_28px_rgba(0,0,0,0.42)]" />
-                            <div className="pointer-events-none absolute inset-y-3 left-1/2 w-[1px] -translate-x-1/2 bg-[rgba(255,237,206,0.18)]" />
+                            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.06),transparent_42%)]" />
+                            <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(0,0,0,0.08),transparent_16%,transparent_84%,rgba(0,0,0,0.15))]" />
+                            <div className="pointer-events-none absolute inset-y-0 left-1/2 w-12 -translate-x-1/2 bg-[linear-gradient(to_right,rgba(30,41,59,0.95),rgba(15,23,42,0.92),rgba(30,41,59,0.95))] shadow-[0_0_28px_rgba(0,0,0,0.5)]" />
+                            <div className="pointer-events-none absolute inset-y-3 left-1/2 w-[1px] -translate-x-1/2 bg-[rgba(226,232,240,0.18)]" />
 
-                            <div className="absolute inset-x-0 top-0 h-8 bg-[linear-gradient(to_bottom,rgba(255,243,217,0.16),transparent)]" />
-
-                            <div className="grid gap-0 overflow-hidden rounded-[1.8rem] border border-[rgba(255,240,206,0.12)] bg-[linear-gradient(180deg,rgba(80,52,29,0.18),rgba(35,21,12,0.08))] shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] lg:grid-cols-[1fr_1fr]">
+                            {/* Inner Yellow Parchment Pages */}
+                            <div className="grid gap-0 overflow-hidden rounded-[1.8rem] border border-[#d8caae]/60 bg-[#eedebf] shadow-[inset_0_1px_0_rgba(255,255,255,0.4)] lg:grid-cols-[1fr_1fr]">
                                 <motion.aside
-                                    className="relative overflow-hidden bg-[linear-gradient(180deg,rgba(244,227,194,0.98),rgba(227,201,158,0.97))] px-5 py-6 text-[var(--ink)] shadow-[inset_-14px_0_28px_rgba(116,74,35,0.12),inset_0_1px_0_rgba(255,255,255,0.55)] sm:px-8 sm:py-8"
+                                    className="relative overflow-hidden bg-[linear-gradient(180deg,#fbf7ee,#f2e9d8)] px-5 py-6 text-ink shadow-[inset_-14px_0_28px_rgba(72,52,32,0.08),inset_0_1px_0_rgba(255,255,255,0.8)] sm:px-8 sm:py-8"
                                     initial={{ opacity: 0, x: -18 }}
                                     animate={{ opacity: 1, x: 0 }}
                                     transition={{ duration: 0.75, delay: 0.15 }}
                                 >
-                                    <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_15%_12%,rgba(255,255,255,0.22),transparent_26%),linear-gradient(90deg,rgba(111,74,34,0.08),transparent_10%,transparent_90%,rgba(111,74,34,0.06))] opacity-80" />
-                                    <div className="pointer-events-none absolute inset-y-0 right-0 w-8 bg-[linear-gradient(to_right,transparent,rgba(146,104,58,0.18))]" />
+                                    <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_15%_12%,rgba(255,255,255,0.45),transparent_26%),linear-gradient(90deg,rgba(110,80,45,0.05),transparent_10%,transparent_90%,rgba(110,80,45,0.04))] opacity-80" />
+                                    <div className="pointer-events-none absolute inset-y-0 right-0 w-8 bg-[linear-gradient(to_right,transparent,rgba(70,48,22,0.12))]" />
                                     <div className="relative flex h-full min-h-[31rem] flex-col justify-between gap-8">
                                         <div className="space-y-6">
-                                            <div className="flex items-center gap-3 text-[0.68rem] uppercase tracking-[0.42em] text-[rgba(67,42,20,0.62)]">
-                                                <span className="h-px flex-1 bg-[rgba(67,42,20,0.18)]" />
+                                            <div className="flex items-center gap-3 text-[0.68rem] uppercase tracking-[0.42em] text-[#8c7457]">
+                                                <span className="h-px flex-1 bg-[#cfbe9e]" />
                                                 Marginalia
                                             </div>
                                             <div className="space-y-4">
                                                 <h1
-                                                    className={`${headingFont.className} max-w-[10ch] text-5xl leading-[0.92] font-semibold tracking-tight sm:text-6xl lg:text-7xl`}
+                                                    className={`${headingFont.className} max-w-[10ch] text-5xl leading-[0.92] font-semibold tracking-tight text-[#1e130a] sm:text-6xl lg:text-7xl`}
                                                 >
                                                     The Living Tome
                                                 </h1>
-                                                <p className="max-w-[26rem] text-lg leading-8 text-[rgba(41,22,11,0.84)] sm:text-xl">
+                                                <p className="max-w-[26rem] text-lg leading-8 text-[#4a3b2c] sm:text-xl">
                                                     Within these pages lie
                                                     fragments of a life
                                                     stretched across centuries.
@@ -207,9 +207,9 @@ export default function Home() {
                                             </div>
                                         </div>
 
-                                        <div className="space-y-4 border-t border-[rgba(67,42,20,0.16)] pt-6">
-                                            <div className="flex items-center gap-3 text-[0.72rem] uppercase tracking-[0.35em] text-[rgba(67,42,20,0.64)]">
-                                                <span className="h-px flex-1 bg-[rgba(67,42,20,0.18)]" />
+                                        <div className="space-y-4 border-t border-[#d8caae]/80 pt-6">
+                                            <div className="flex items-center gap-3 text-[0.72rem] uppercase tracking-[0.35em] text-[#8c7457]">
+                                                <span className="h-px flex-1 bg-[#cfbe9e]" />
                                                 Field notes
                                             </div>
                                             <ul className="space-y-3">
@@ -217,7 +217,7 @@ export default function Home() {
                                                     (clue, clueIndex) => (
                                                         <motion.li
                                                             key={clue}
-                                                            className="flex items-start gap-3 text-base leading-7 text-[rgba(42,22,11,0.9)]"
+                                                            className="flex items-start gap-3 text-base leading-7 text-[#3d2f21]"
                                                             initial={{
                                                                 opacity: 0,
                                                                 x: -8,
@@ -233,7 +233,7 @@ export default function Home() {
                                                                         0.12,
                                                             }}
                                                         >
-                                                            <span className="mt-2 h-2 w-2 rounded-full bg-[rgba(69,41,18,0.56)] shadow-[0_0_0_3px_rgba(69,41,18,0.08)]" />
+                                                            <span className="mt-2 h-2 w-2 rounded-full bg-[#8c2a36] shadow-[0_0_0_3px_rgba(140,42,54,0.15)]" />
                                                             <span>{clue}</span>
                                                         </motion.li>
                                                     ),
@@ -244,21 +244,21 @@ export default function Home() {
                                 </motion.aside>
 
                                 <motion.section
-                                    className="relative overflow-hidden bg-[linear-gradient(180deg,rgba(241,226,190,0.98),rgba(226,201,156,0.98))] px-5 py-6 text-[var(--ink)] shadow-[inset_14px_0_28px_rgba(116,74,35,0.1),inset_0_1px_0_rgba(255,255,255,0.54)] sm:px-8 sm:py-8"
+                                    className="relative overflow-hidden bg-[linear-gradient(180deg,#fbf7ee,#ece2cc)] px-5 py-6 text-ink shadow-[inset_14px_0_28px_rgba(72,52,32,0.07),inset_0_1px_0_rgba(255,255,255,0.8)] sm:px-8 sm:py-8"
                                     initial={{ opacity: 0, x: 18 }}
                                     animate={{ opacity: 1, x: 0 }}
                                     transition={{ duration: 0.8, delay: 0.18 }}
                                 >
-                                    <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_80%_16%,rgba(255,255,255,0.18),transparent_24%),linear-gradient(90deg,rgba(111,74,34,0.06),transparent_12%,transparent_88%,rgba(111,74,34,0.08))] opacity-80" />
-                                    <div className="pointer-events-none absolute inset-y-0 left-0 w-8 bg-[linear-gradient(to_left,transparent,rgba(146,104,58,0.16))]" />
+                                    <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_80%_16%,rgba(255,255,255,0.35),transparent_24%),linear-gradient(90deg,rgba(110,80,45,0.04),transparent_12%,transparent_88%,rgba(110,80,45,0.06))] opacity-80" />
+                                    <div className="pointer-events-none absolute inset-y-0 left-0 w-8 bg-[linear-gradient(to_left,transparent,rgba(70,48,22,0.12))]" />
                                     <div className="relative flex min-h-[31rem] flex-col">
                                         <div className="mb-6 flex items-start justify-between gap-4">
                                             <div>
-                                                <p className="text-[0.68rem] uppercase tracking-[0.42em] text-[rgba(67,42,20,0.6)]">
+                                                <p className="text-[0.68rem] uppercase tracking-[0.42em] text-[#8c7457]">
                                                     Chapter I
                                                 </p>
                                                 <h2
-                                                    className={`${headingFont.className} mt-2 text-4xl font-semibold tracking-tight sm:text-5xl`}
+                                                    className={`${headingFont.className} mt-2 text-4xl font-semibold tracking-tight text-[#1e130a] sm:text-5xl`}
                                                 >
                                                     The page remembers.
                                                 </h2>
@@ -266,7 +266,7 @@ export default function Home() {
 
                                             <motion.button
                                                 type="button"
-                                                className="rounded-full border border-[rgba(67,42,20,0.18)] bg-[rgba(255,252,246,0.78)] px-4 py-2 text-[0.68rem] uppercase tracking-[0.3em] text-[rgba(50,30,16,0.82)] shadow-[0_8px_24px_rgba(73,41,18,0.12)] backdrop-blur-sm transition-colors hover:bg-[rgba(255,255,255,0.92)]"
+                                                className="rounded-full border border-[#c2b293] bg-[#f5ede0] px-4 py-2 text-[0.68rem] uppercase tracking-[0.3em] text-[#4a3828] shadow-sm backdrop-blur-sm transition-colors hover:bg-white"
                                                 onClick={() =>
                                                     setCycle(
                                                         (value) => value + 1,
@@ -288,7 +288,7 @@ export default function Home() {
                                         </div>
 
                                         <div className="relative flex flex-1 flex-col justify-between gap-8">
-                                            <div className="space-y-6 text-xl leading-9 tracking-[0.01em] text-[rgba(41,22,11,0.92)] sm:text-[1.35rem] sm:leading-[2.4rem]">
+                                            <div className="space-y-6 text-xl leading-9 tracking-[0.01em] text-[#24170d] sm:text-[1.35rem] sm:leading-[2.4rem]">
                                                 <motion.p
                                                     key={cycle}
                                                     className="max-w-[32rem] whitespace-pre-line"
@@ -302,7 +302,7 @@ export default function Home() {
                                                 </motion.p>
                                             </div>
 
-                                            <div className="flex flex-wrap items-center justify-between gap-4 border-t border-[rgba(67,42,20,0.14)] pt-5 text-[0.78rem] uppercase tracking-[0.32em] text-[rgba(67,42,20,0.55)]">
+                                            <div className="flex flex-wrap items-center justify-between gap-4 border-t border-[#d8caae]/80 pt-5 text-[0.78rem] uppercase tracking-[0.32em] text-[#8c7457]">
                                                 <span>
                                                     Speak softly. The page is
                                                     listening.
