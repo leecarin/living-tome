@@ -60,6 +60,7 @@ const leftPageBoundary = getLeftPageBoundary(passage);
 export default function EpiloguePage() {
     const prefersReducedMotion = useReducedMotion();
     const [revealCount, setRevealCount] = useState(0);
+    const [cycle, setCycle] = useState(0);
 
     useEffect(() => {
         let cancelled = false;
@@ -108,7 +109,7 @@ export default function EpiloguePage() {
             cancelled = true;
             window.clearTimeout(timeoutId);
         };
-    }, [prefersReducedMotion]);
+    }, [cycle, prefersReducedMotion]);
 
     const revealedText = passage.slice(0, revealCount);
     const leftText = revealedText.slice(0, leftPageBoundary);
@@ -135,9 +136,26 @@ export default function EpiloguePage() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
                 >
-                    <div className="mb-5 flex items-center justify-between px-1 text-[0.68rem] uppercase tracking-[0.48em] text-[var(--foreground-soft)]">
+                    <div className="mb-5 flex items-center justify-between gap-4 px-1 text-[0.68rem] uppercase tracking-[0.48em] text-[var(--foreground-soft)]">
                         <span>{chapterTitle}</span>
-                        <span>Chapter leaf</span>
+
+                        <div className="flex items-center gap-4">
+                            <motion.button
+                                type="button"
+                                className="rounded-full border border-[rgba(67,42,20,0.18)] bg-[rgba(255,252,246,0.78)] px-4 py-2 text-[0.68rem] uppercase tracking-[0.3em] text-[rgba(50,30,16,0.82)] shadow-[0_8px_24px_rgba(73,41,18,0.12)] backdrop-blur-sm transition-colors hover:bg-[rgba(255,255,255,0.92)]"
+                                onClick={() => setCycle((value) => value + 1)}
+                                whileHover={
+                                    prefersReducedMotion ? undefined : { y: -2 }
+                                }
+                                whileTap={
+                                    prefersReducedMotion
+                                        ? undefined
+                                        : { scale: 0.98 }
+                                }
+                            >
+                                Refresh ink
+                            </motion.button>
+                        </div>
                     </div>
 
                     <motion.section
