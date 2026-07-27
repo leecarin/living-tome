@@ -111,9 +111,13 @@ export default function LastDuskPage() {
             onRefreshInk={handleRefreshInk}
             leftPage={
                 <div className="space-y-5">
-                    <p className="text-[0.66rem] uppercase tracking-[0.4em] text-[#8c7457]">
-                        {chapterTitle}
-                    </p>
+                    {/* Page Header with Inline Horizontal Line */}
+                    <div className="flex items-center gap-3 text-[0.66rem] uppercase tracking-[0.4em] text-[#8c7457]">
+                        <span>{chapterTitle}</span>
+                        <span className="h-px flex-1 bg-[#c2b293]/60" />
+                    </div>
+
+                    {/* Page Body Text */}
                     <div
                         className={`${bodyFont.className} space-y-4 text-[1.3rem] leading-[2.4rem] text-[#24170d]`}
                     >
@@ -125,9 +129,13 @@ export default function LastDuskPage() {
             }
             rightPage={
                 <div className="space-y-5">
-                    <p className="text-[0.66rem] uppercase tracking-[0.4em] text-[#8c7457]">
-                        {chapterTitle}
-                    </p>
+                    {/* Page Header with Inline Horizontal Line */}
+                    <div className="flex items-center gap-3 text-[0.66rem] uppercase tracking-[0.4em] text-[#8c7457]">
+                        <span>{chapterTitle}</span>
+                        <span className="h-px flex-1 bg-[#c2b293]/60" />
+                    </div>
+
+                    {/* Page Body Text */}
                     <motion.div
                         key={cycle}
                         className={`${bodyFont.className} space-y-4 text-[1.3rem] leading-[2.4rem] text-[#24170d]`}

@@ -1,38 +1,121 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 
 const chapters = [
-    { href: "/", label: "Home Page" },
-    { href: "/last-dusk", label: "The Fall of the Dusk Elves" },
-    { href: "/epilogue", label: "Epilogue" },
+    { href: "/", label: "Home Page", code: "I", category: "Front leaf" },
+    {
+        href: "/last-dusk",
+        label: "The Fall of the Dusk Elves",
+        code: "II",
+        category: "Distant leaf",
+    },
+    {
+        href: "/epilogue",
+        label: "Epilogue",
+        code: "III",
+        category: "Distant leaf",
+    },
 ];
 
 export default function ChapterShell({ children }: { children: ReactNode }) {
     const router = useRouter();
+    const [isCollapsed, setIsCollapsed] = useState(false);
+    const [isMobileOpen, setIsMobileOpen] = useState(false);
 
     return (
         <div className="min-h-screen lg:flex">
-            {/* Sidebar Shell with subtle crimson edge glow */}
-            <aside className="relative border-b border-blood/20 bg-[linear-gradient(180deg,rgba(15,23,42,0.98),rgba(10,15,26,0.98))] px-4 py-5 text-foreground shadow-[0_18px_50px_rgba(0,0,0,0.5)] lg:sticky lg:top-0 lg:h-screen lg:w-[18rem] lg:border-b-0 lg:border-r lg:border-blood/25 lg:px-5 lg:py-7">
-                {/* Top Subtle Red Accent Line */}
-                <div className="pointer-events-none absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-blood/40 to-transparent" />
+            {/* Mobile Header Bar */}
+            <div className="flex items-center justify-between border-b border-blood/20 bg-slate-950/98 px-4 py-3 text-foreground lg:hidden">
+                <div className="flex items-center gap-2">
+                    <span className="h-2 w-2 rounded-full bg-blood shadow-dot-glow" />
+                    <span className="font-serif font-semibold tracking-wide">
+                        The Living Tome
+                    </span>
+                </div>
+                <button
+                    type="button"
+                    onClick={() => setIsMobileOpen((prev) => !prev)}
+                    className="rounded-xl border border-blood/30 bg-blood/10 px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-ember hover:bg-blood/20"
+                    aria-label="Toggle Navigation"
+                >
+                    {isMobileOpen ? "Close Index" : "Chapter Index"}
+                </button>
+            </div>
 
-                <div className="flex h-full flex-col gap-6">
+            {/* Sidebar Shell */}
+            <aside
+                className={`relative flex-col border-b border-blood/20 bg-gradient-to-b from-slate-900/98 to-slate-950/98 text-foreground shadow-2xl transition-all duration-300 ease-in-out lg:sticky lg:top-0 lg:flex lg:h-screen lg:border-b-0 lg:border-r lg:border-blood/25 ${
+                    isMobileOpen ? "flex px-4 py-5" : "hidden lg:flex"
+                } ${
+                    isCollapsed
+                        ? "lg:w-[5rem] lg:px-3 lg:py-6"
+                        : "lg:w-[18rem] lg:px-5 lg:py-7"
+                }`}
+            >
+                {/* Top Red Accent Divider */}
+                <div
+                    aria-hidden="true"
+                    className="bg-crimson-divider mb-4 h-[2px] w-full"
+                />
+
+                <div className="flex h-full flex-col gap-6 overflow-hidden">
                     {/* Header Section */}
-                    <div className="space-y-2 border-b border-blood/20 pb-4">
-                        <div className="flex items-center gap-2">
-                            <span className="h-1.5 w-1.5 rounded-full bg-blood shadow-[0_0_8px_var(--blood)]" />
-                            <p className="text-[0.68rem] font-medium uppercase tracking-[0.5em] text-blood-light/80">
-                                Chapter Index
-                            </p>
+                    <div className="relative border-b border-blood/20 pb-4">
+                        <div className="flex items-center justify-between gap-2">
+                            <div className="flex items-center gap-2">
+                                <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-blood shadow-dot-glow" />
+                                {!isCollapsed && (
+                                    <p className="whitespace-nowrap text-[0.68rem] font-medium uppercase tracking-[0.5em] text-blood-light/80">
+                                        Chapter Index
+                                    </p>
+                                )}
+                            </div>
+
+                            {/* Desktop Collapse Toggle */}
+                            <button
+                                type="button"
+                                onClick={() => setIsCollapsed((prev) => !prev)}
+                                className="hidden rounded-lg border border-blood/20 bg-white/[0.04] p-1.5 text-xs text-foreground-soft transition-colors hover:border-blood/50 hover:bg-blood/10 hover:text-ember lg:block"
+                                title={
+                                    isCollapsed
+                                        ? "Expand Sidebar"
+                                        : "Collapse Sidebar"
+                                }
+                                aria-label={
+                                    isCollapsed
+                                        ? "Expand Sidebar"
+                                        : "Collapse Sidebar"
+                                }
+                            >
+                                <svg
+                                    className={`h-4 w-4 transform transition-transform duration-300 ${
+                                        isCollapsed ? "rotate-180" : ""
+                                    }`}
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                    strokeWidth={2}
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        d="M11 19l-7-7 7-7m8 14l-7-7 7-7"
+                                    />
+                                </svg>
+                            </button>
                         </div>
-                        <h1 className="font-[var(--font-body,Georgia)] text-2xl leading-tight text-foreground">
-                            The Living Tome
-                        </h1>
-                        <p className="max-w-[15rem] text-sm leading-6 text-foreground-soft">
-                            Turn the leaves to step between chapters.
-                        </p>
+
+                        {!isCollapsed && (
+                            <div className="mt-2 space-y-1">
+                                <h1 className="whitespace-nowrap font-serif text-2xl leading-tight text-foreground">
+                                    The Living Tome
+                                </h1>
+                                <p className="max-w-[15rem] text-sm leading-6 text-foreground-soft">
+                                    Turn the leaves to step between chapters.
+                                </p>
+                            </div>
+                        )}
                     </div>
 
                     {/* Navigation */}
@@ -47,44 +130,63 @@ export default function ChapterShell({ children }: { children: ReactNode }) {
                                 <Link
                                     key={chapter.href}
                                     href={chapter.href}
-                                    className={`group relative rounded-2xl border px-4 py-3.5 text-left transition-all duration-200 ${
+                                    onClick={() => setIsMobileOpen(false)}
+                                    title={
+                                        isCollapsed ? chapter.label : undefined
+                                    }
+                                    className={`group relative flex items-center gap-3 rounded-2xl border transition-all duration-200 ${
+                                        isCollapsed
+                                            ? "justify-center px-2 py-3.5"
+                                            : "px-4 py-3.5 text-left"
+                                    } ${
                                         isActive
-                                            ? "border-blood/70 bg-blood/20 text-foreground shadow-[0_4px_20px_rgba(136,19,55,0.35),inset_0_0_0_1px_rgba(225,29,72,0.2)]"
+                                            ? "border-blood/70 bg-blood/20 text-foreground shadow-chapter-active"
                                             : "border-foreground/10 bg-white/[0.04] text-foreground-soft hover:border-blood/40 hover:bg-blood/10 hover:text-foreground"
                                     }`}
                                 >
-                                    {/* Active Left Bookmark Indicator Strip */}
+                                    {/* Active Left Bookmark Strip */}
                                     {isActive && (
-                                        <span className="absolute inset-y-2.5 left-0 w-1 rounded-r-full bg-ember shadow-[0_0_8px_var(--ember)]" />
+                                        <span className="shadow-bookmark-glow absolute inset-y-2.5 left-0 w-1 rounded-r-full bg-ember" />
                                     )}
 
-                                    <span
-                                        className={`block text-[0.68rem] font-medium uppercase tracking-[0.38em] transition-colors ${
-                                            isActive
-                                                ? "text-ember"
-                                                : "text-foreground-soft group-hover:text-ember"
-                                        }`}
-                                    >
-                                        {chapter.href === "/"
-                                            ? "Front leaf"
-                                            : "Distant leaf"}
-                                    </span>
-                                    <span className="mt-1 block text-base leading-6 font-medium">
-                                        {chapter.label}
-                                    </span>
+                                    {/* Icon Indicator when collapsed */}
+                                    {isCollapsed ? (
+                                        <span className="text-lg">
+                                            {chapter.code}
+                                        </span>
+                                    ) : (
+                                        <div className="min-w-0 flex-1">
+                                            <span
+                                                className={`block text-[0.68rem] font-medium uppercase tracking-[0.38em] transition-colors ${
+                                                    isActive
+                                                        ? "text-ember"
+                                                        : "text-foreground-soft group-hover:text-ember"
+                                                }`}
+                                            >
+                                                {chapter.href === "/"
+                                                    ? "Front leaf"
+                                                    : "Distant leaf"}
+                                            </span>
+                                            <span className="mt-0.5 block truncate text-base font-medium leading-6">
+                                                {chapter.label}
+                                            </span>
+                                        </div>
+                                    )}
                                 </Link>
                             );
                         })}
                     </nav>
 
                     {/* Footer Callout */}
-                    <div className="mt-auto hidden rounded-2xl border border-blood/20 bg-blood/[0.06] px-4 py-4 text-sm leading-6 text-foreground-soft lg:block">
-                        <span className="block text-xs font-semibold uppercase tracking-widest text-blood-light/70">
-                            Bound in Blood
-                        </span>
-                        A quiet shelf of chapters waits here, bound in slate and
-                        memory.
-                    </div>
+                    {!isCollapsed && (
+                        <div className="mt-auto hidden rounded-2xl border border-blood/20 bg-blood/[0.06] px-4 py-4 text-sm leading-6 text-foreground-soft lg:block">
+                            <span className="block text-xs font-semibold uppercase tracking-widest text-blood-light/70">
+                                Bound in Blood
+                            </span>
+                            A quiet shelf of chapters waits here, bound in slate
+                            and memory.
+                        </div>
+                    )}
                 </div>
             </aside>
 

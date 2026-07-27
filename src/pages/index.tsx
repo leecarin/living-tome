@@ -150,8 +150,8 @@ export default function Home() {
                     >
                         <div className="mb-5 flex flex-wrap items-center justify-between gap-4 px-2 text-[0.7rem] uppercase tracking-[0.45em] text-foreground-soft sm:px-4">
                             <div className="flex items-center gap-3">
-                                <span className="h-2 w-2 rounded-full bg-ember shadow-[0_0_18px_var(--ember)]" />
-                                <span>Archive VI</span>
+                                <span className="h-2.5 w-2.5 rounded-full red-dot-glow" />
+                                <span>Curse of Strahd</span>
                             </div>
                             <span>Open a leaf to reveal the chapter</span>
                         </div>
@@ -268,7 +268,7 @@ export default function Home() {
 
                                             <motion.button
                                                 type="button"
-                                                className="rounded-full border border-[#c2b08d] bg-[#e3d3b3]/50 px-4 py-2 text-[0.68rem] uppercase tracking-[0.3em] text-[#3d2f21] shadow-sm backdrop-blur-sm transition-colors hover:bg-[#ebdcc2] hover:text-ink"
+                                                className="btn-parchment"
                                                 onClick={() =>
                                                     setCycle(
                                                         (value) => value + 1,
@@ -285,7 +285,8 @@ export default function Home() {
                                                         : { scale: 0.98 }
                                                 }
                                             >
-                                                Refresh ink
+                                                <span>Refresh</span>
+                                                <span>Ink</span>
                                             </motion.button>
                                         </div>
 
