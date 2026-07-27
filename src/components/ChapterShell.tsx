@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 
 const chapters = [
     { href: "/", label: "Home Page" },
+    { href: "/last-dusk", label: "The Fall of the Dusk Elves" },
     { href: "/epilogue", label: "Epilogue" },
 ];
 
