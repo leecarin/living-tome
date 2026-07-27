@@ -151,7 +151,7 @@ export default function Home() {
                                 <span className="h-2 w-2 rounded-full bg-[var(--ember)] shadow-[0_0_18px_rgba(232,162,85,0.95)]" />
                                 <span>Archive VI</span>
                             </div>
-                            <span>Open to reveal the chapter</span>
+                            <span>Open a leaf to reveal the chapter</span>
                         </div>
 
                         <motion.div
@@ -253,7 +253,7 @@ export default function Home() {
                                         <div className="mb-6 flex items-start justify-between gap-4">
                                             <div>
                                                 <p className="text-[0.68rem] uppercase tracking-[0.42em] text-[rgba(67,42,20,0.6)]">
-                                                    Chapter IV
+                                                    Chapter I
                                                 </p>
                                                 <h2
                                                     className={`${headingFont.className} mt-2 text-4xl font-semibold tracking-tight sm:text-5xl`}

@@ -1,6 +1,7 @@
 import Head from "next/head";
 import { useEffect, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
+import { Charm, Nothing_You_Could_Do } from "next/font/google";
 import {
     LETTER_REVEAL_BASE_DELAY_MS,
     LETTER_REVEAL_INITIAL_DELAY_MS,
@@ -8,8 +9,12 @@ import {
     LETTER_REVEAL_PUNCTUATION_DELAY_MS,
 } from "@/lib/chapterTiming";
 
+const bodyFont = Nothing_You_Could_Do({
+    weight: "400",
+});
+
 const passage =
-    "How many times over the centuries had I met you? How many times have I lost you? I could not say. \n\nYou ever wore the same face, under a different name, yet I would know you even if I were blind—your quick wit, your stubbornness, and the sharp-tongued quips I would endure from none other than you, are as unmistakable as they are refreshing.\n\nDespite the years, somehow I had always found a way to touch those hidden memories in your heart. And somehow, we always lose. Throughout the generations, we have lost over and over again, forever trading joy for grief.\n\nIf I could just once break the pattern, break whatever curse that keeps us apart. In doing that, I might find freedom for us both.\n\nBut year after year flies by; they pile into decades, mass into centuries.\n\nHow many lay before me? And are they all to be as lonely as those I've already had? Unable to answer, unwilling to guess, I sit and stare at your portrait and feel another night slipping away into the irretrievable past.\n\nIf I could just rest. Sleep. Sleep for more than just a single day, sleep away all my sorrows and lose myself in... I am unsure. To drift, dreamless and serene. To forget. To... rest.";
+    "How many times over the centuries had I met you? How many times have I lost you? I could not say. \n\nYou ever wore the same face, under a different name, yet I would know you even if I were blind — your quick wit, your stubbornness, and the sharp-tongued quips I would endure from none other, are as unmistakable as they are refreshing.\n\nDespite the years, somehow I had always found a way to touch those hidden memories in your heart. And somehow, we always lose. Throughout the generations, we have lost over and over again, forever trading joy for grief.\n\nIf I could just once break the pattern, break whatever curse that keeps us apart. In doing that, I might find freedom for us both.\n\nBut year after year flies by; they pile into decades, mass into centuries.\n\nHow many lay before me? And are they all to be as lonely as those I've already had? Unable to answer, unwilling to guess, I sit and stare at your portrait and feel another night slipping away into the irretrievable past.\n\nIf I could just rest. Sleep. Sleep for more than just a single day, sleep away all my sorrows and lose myself in...I am unsure. To drift, dreamless and serene. To forget. To...rest.";
 
 const chapterTitle = "Epilogue";
 
@@ -117,11 +122,13 @@ export default function EpiloguePage() {
                 <title>{chapterTitle} | The Living Tome</title>
                 <meta
                     name="description"
-                    content="Epilogue chapter, written slowly across the pages of an open book."
+                    content="The Epilogue chapter, written slowly across the pages of an open book."
                 />
             </Head>
 
-            <main className="relative min-h-screen overflow-hidden px-4 py-8 text-[var(--foreground)] sm:px-6 lg:px-8">
+            <main
+                className={`relative min-h-screen overflow-hidden px-4 py-8 text-[var(--foreground)] sm:px-6 lg:px-8`}
+            >
                 <motion.div
                     className="mx-auto w-full max-w-6xl"
                     initial={{ opacity: 0, y: 18 }}
@@ -158,14 +165,13 @@ export default function EpiloguePage() {
                                     <div className="space-y-5">
                                         <div className="flex items-center gap-3 text-[0.66rem] uppercase tracking-[0.4em] text-[rgba(67,42,20,0.62)]">
                                             <span className="h-px flex-1 bg-[rgba(67,42,20,0.18)]" />
-                                            Open leaf
+                                            Epilogue
                                         </div>
-                                        <p className="max-w-[28rem] whitespace-pre-line text-[1.15rem] leading-9 text-[rgba(41,22,11,0.92)] sm:text-[1.3rem] sm:leading-[2.4rem]">
+                                        <p
+                                            className={`${bodyFont.className} max-w-[28rem] whitespace-pre-line text-[1.5rem] leading-9 text-[rgba(41,22,11,0.92)] sm:text-[1.3rem] sm:leading-[2.8rem]`}
+                                        >
                                             {leftText}
                                         </p>
-                                    </div>
-                                    <div className="text-[0.74rem] uppercase tracking-[0.34em] text-[rgba(67,42,20,0.55)]">
-                                        Left page
                                     </div>
                                 </div>
                             </div>
@@ -176,20 +182,17 @@ export default function EpiloguePage() {
                                     <div className="space-y-5">
                                         <div className="flex items-center gap-3 text-[0.66rem] uppercase tracking-[0.4em] text-[rgba(67,42,20,0.62)]">
                                             <span className="h-px flex-1 bg-[rgba(67,42,20,0.18)]" />
-                                            Open leaf
+                                            Epilogue
                                         </div>
                                         <motion.p
                                             key={revealCount}
                                             initial={{ opacity: 0.86 }}
                                             animate={{ opacity: 1 }}
                                             transition={{ duration: 0.2 }}
-                                            className="max-w-[28rem] whitespace-pre-line text-[1.15rem] leading-9 text-[rgba(41,22,11,0.92)] sm:text-[1.3rem] sm:leading-[2.4rem]"
+                                            className={`${bodyFont.className} max-w-[28rem] whitespace-pre-line text-[1.5rem] leading-9 text-[rgba(41,22,11,0.92)] sm:text-[1.3rem] sm:leading-[2.4rem]`}
                                         >
                                             {rightText}
                                         </motion.p>
-                                    </div>
-                                    <div className="text-[0.74rem] uppercase tracking-[0.34em] text-[rgba(67,42,20,0.55)]">
-                                        Right page
                                     </div>
                                 </div>
                             </div>
