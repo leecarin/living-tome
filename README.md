@@ -1,40 +1,51 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
+# The Living Tome
 
-## Getting Started
+The Living Tome is a Next.js experience built for D&D players: an animated open book that fills with text as if it is being written by an invisible hand. The project uses Motion for the page and text transitions, with a parchment-and-leather visual style that keeps the whole app feeling like a fantasy artifact instead of a generic web page.
 
-First, run the development server:
+## What’s Inside
+
+- A motion-driven home chapter that reveals text letter by letter.
+- A shared chapter shell with navigation for the book’s routes.
+- A second chapter, `Epilogue`, rendered as a two-page spread.
+- Shared reveal timing in `src/lib/chapterTiming.ts` so the writing pace stays consistent across chapters.
+
+## Tech Stack
+
+- Next.js 16 with the Pages Router
+- React 19
+- Motion for React
+- Tailwind CSS 4
+- TypeScript
+
+## Run Locally
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Then open `http://localhost:3000` in your browser.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+## Scripts
 
-[API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+- `npm run dev` - start the development server
+- `npm run build` - create a production build
+- `npm run start` - run the production server
+- `npm run lint` - run ESLint
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
+## Routes
 
-This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- `/` - the main living tome chapter
+- `/epilogue` - the epilogue chapter shown in the book navigation
 
-## Learn More
+## Project Structure
 
-To learn more about Next.js, take a look at the following resources:
+- `src/pages/_app.tsx` - global shell and chapter navigation
+- `src/pages/index.tsx` - the animated landing chapter
+- `src/pages/epilogue.tsx` - the chapter renamed from `last-dusk.tsx`
+- `src/lib/chapterTiming.ts` - shared reveal timing constants
+- `src/styles/globals.css` - global parchment and candlelit styling
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn-pages-router) - an interactive Next.js tutorial.
+## Notes
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
+This project is intentionally stylized for atmosphere. The layout, typography, and animation are designed to feel like a physical fantasy book rather than a standard app shell.
