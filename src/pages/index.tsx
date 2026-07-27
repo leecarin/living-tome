@@ -20,12 +20,14 @@ const bodyFont = Crimson_Text({
 });
 
 const tomeScript =
-    "You were not summoned by chance.\n\nBeneath the ruined watchtower, the floor is still warm where the oath was spoken.\n\nWhen the last candle gutters, the living ink will point toward the gate that should have stayed sealed.";
+    "The mists do not merely conceal—they remember.\n\n" +
+    "Within these pages are preserved moments that time itself sought to erase.\n\n" +
+    "Read with care, for every memory carries a price, and not every truth was meant to be uncovered.";
 
 const clues = [
-    "Track the three bells at dusk.",
-    "Never read the final line aloud.",
-    "Return the key to the ash circle.",
+    "Sacrifice opens every door worth entering.",
+    "Memory is both prison and key.",
+    "Leave no chapter unread.",
 ];
 
 export default function Home() {
@@ -196,11 +198,11 @@ export default function Home() {
                                                     The Living Tome
                                                 </h1>
                                                 <p className="max-w-[26rem] text-lg leading-8 text-[rgba(41,22,11,0.84)] sm:text-xl">
-                                                    An open book that writes
-                                                    itself in the hush between
-                                                    torchlight and thunder,
-                                                    ready for the next D&D
-                                                    descent into the unknown.
+                                                    Within these pages lie
+                                                    fragments of a life
+                                                    stretched across centuries.
+                                                    Read carefully—for memory is
+                                                    seldom truthful in Barovia.
                                                 </p>
                                             </div>
                                         </div>
