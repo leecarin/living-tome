@@ -1,26 +1,79 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+    --background: #090602;
+    --foreground: #f4e7cc;
+    --foreground-soft: #d9c29c;
+    --ink: #2a1a0f;
+    --ember: #e6a14a;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+    min-height: 100%;
+    background: var(--background);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+    min-height: 100vh;
+    margin: 0;
+    background: var(--background);
+    color: var(--foreground);
+    font-family: Georgia, "Times New Roman", serif;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(
+            circle at top,
+            rgba(255, 214, 156, 0.16),
+            transparent 40%
+        ),
+        radial-gradient(
+            circle at 20% 20%,
+            rgba(255, 255, 255, 0.06),
+            transparent 24%
+        ),
+        radial-gradient(
+            circle at 80% 0%,
+            rgba(109, 59, 24, 0.34),
+            transparent 28%
+        ),
+        linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.02),
+            rgba(0, 0, 0, 0.1)
+        );
+    mix-blend-mode: screen;
+    opacity: 0.9;
+}
+
+body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(
+        circle at center,
+        transparent 38%,
+        rgba(0, 0, 0, 0.42) 100%
+    );
+    opacity: 0.7;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+::selection {
+    background: rgba(230, 161, 74, 0.36);
+    color: #fff5e5;
 }
