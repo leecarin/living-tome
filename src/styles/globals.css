@@ -5,10 +5,16 @@
     --foreground: #f8fafc;
     --foreground-soft: #cbd5e1;
 
-    /* Ink on the book pages */
+    /* Ink on book pages */
     --ink: #2a1a0f;
 
-    /* Gothic accent colours */
+    /* Tome page surface colours */
+    --page-base: #dfceab; /* (Was #eedebf) Darker base parchment */
+    --page-top: #ebdcc2; /* (Was #fbf7ee) Softened top light tone */
+    --page-bottom-left: #d9c5a0; /* (Was #f2e9d8) Deepened bottom left shadow */
+    --page-bottom-right: #d2be97; /* (Was #ece2cc) Deepened bottom right shadow */
+
+    /* Accent colors */
     --ember: #b91c1c;
     --blood: #881337;
     --mist: #94a3b8;
@@ -21,70 +27,19 @@
     --color-foreground: var(--foreground);
     --color-foreground-soft: var(--foreground-soft);
     --color-ink: var(--ink);
-    --color-ember: var(--ember);
-    --color-blood: var(--blood);
-    --color-mist: var(--mist);
-    --color-moonlight: var(--moonlight);
-    --color-gold: var(--gold);
+    --color-page-base: var(--page-base);
+    --color-page-top: var(--page-top);
+    --color-page-bottom-left: var(--page-bottom-left);
+    --color-page-bottom-right: var(--page-bottom-right);
 }
 
-html {
-    min-height: 100%;
-    background: var(--background);
-}
-
+html,
 body {
     min-height: 100vh;
     margin: 0;
-    background: var(--background);
+    background-color: var(--background);
     color: var(--foreground);
     font-family: Georgia, "Times New Roman", serif;
-}
-
-/* Texture Layer: Muted dot grid pattern instead of broad center lighting */
-body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    background-image:
-        radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.7));
-    background-size:
-        24px 24px,
-        100% 100%;
-    background-position:
-        0 0,
-        0 0;
-    opacity: 0.6;
-}
-
-/* Atmosphere Layer: Pushes subtle colored accents strictly to the screen corners */
-body::after {
-    content: "";
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    background: 
-        /* Crimson accent strictly top-right */
-        radial-gradient(
-            circle at 100% 0%,
-            rgba(136, 19, 55, 0.25) 0%,
-            transparent 40%
-        ),
-        /* Cool moonlight accent strictly top-left */
-        radial-gradient(
-                circle at 0% 0%,
-                rgba(148, 163, 184, 0.12) 0%,
-                transparent 35%
-            ),
-        /* Deep edge vignette */
-        radial-gradient(
-                circle at 50% 50%,
-                transparent 50%,
-                rgba(0, 0, 0, 0.8) 100%
-            );
-    opacity: 0.9;
 }
 
 * {

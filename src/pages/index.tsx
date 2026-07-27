@@ -156,7 +156,7 @@ export default function Home() {
                             <span>Open a leaf to reveal the chapter</span>
                         </div>
 
-                        {/* Outer Dark Gray Cover */}
+                        {/* Outer Dark Cover */}
                         <motion.div
                             className="relative overflow-hidden rounded-[2.4rem] border border-slate-700/80 bg-[linear-gradient(180deg,rgba(30,41,59,0.98),rgba(15,23,42,0.98))] p-3 shadow-[0_48px_140px_rgba(0,0,0,0.7)] ring-1 ring-black/50 sm:p-4"
                             whileHover={
@@ -175,29 +175,30 @@ export default function Home() {
                             <div className="pointer-events-none absolute inset-y-0 left-1/2 w-12 -translate-x-1/2 bg-[linear-gradient(to_right,rgba(30,41,59,0.95),rgba(15,23,42,0.92),rgba(30,41,59,0.95))] shadow-[0_0_28px_rgba(0,0,0,0.5)]" />
                             <div className="pointer-events-none absolute inset-y-3 left-1/2 w-[1px] -translate-x-1/2 bg-[rgba(226,232,240,0.18)]" />
 
-                            {/* Inner Yellow Parchment Pages */}
-                            <div className="grid gap-0 overflow-hidden rounded-[1.8rem] border border-[#d8caae]/60 bg-[#eedebf] shadow-[inset_0_1px_0_rgba(255,255,255,0.4)] lg:grid-cols-[1fr_1fr]">
+                            {/* Inner Parchment Pages bound by CSS color variables */}
+                            <div className="grid gap-0 overflow-hidden rounded-[1.8rem] border border-[#c2b08d]/80 bg-[var(--page-base)] shadow-[inset_0_1px_0_rgba(255,255,255,0.2)] lg:grid-cols-[1fr_1fr]">
+                                {/* Left Page */}
                                 <motion.aside
-                                    className="relative overflow-hidden bg-[linear-gradient(180deg,#fbf7ee,#f2e9d8)] px-5 py-6 text-ink shadow-[inset_-14px_0_28px_rgba(72,52,32,0.08),inset_0_1px_0_rgba(255,255,255,0.8)] sm:px-8 sm:py-8"
+                                    className="relative overflow-hidden bg-[linear-gradient(180deg,var(--page-top),var(--page-bottom-left))] px-5 py-6 text-ink shadow-[inset_-14px_0_28px_rgba(72,52,32,0.12),inset_0_1px_0_rgba(255,255,255,0.4)] sm:px-8 sm:py-8"
                                     initial={{ opacity: 0, x: -18 }}
                                     animate={{ opacity: 1, x: 0 }}
                                     transition={{ duration: 0.75, delay: 0.15 }}
                                 >
-                                    <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_15%_12%,rgba(255,255,255,0.45),transparent_26%),linear-gradient(90deg,rgba(110,80,45,0.05),transparent_10%,transparent_90%,rgba(110,80,45,0.04))] opacity-80" />
-                                    <div className="pointer-events-none absolute inset-y-0 right-0 w-8 bg-[linear-gradient(to_right,transparent,rgba(70,48,22,0.12))]" />
+                                    <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_15%_12%,rgba(255,255,255,0.25),transparent_26%),linear-gradient(90deg,rgba(70,48,22,0.06),transparent_10%,transparent_90%,rgba(70,48,22,0.05))] opacity-80" />
+                                    <div className="pointer-events-none absolute inset-y-0 right-0 w-8 bg-[linear-gradient(to_right,transparent,rgba(40,28,12,0.15))]" />
                                     <div className="relative flex h-full min-h-[31rem] flex-col justify-between gap-8">
                                         <div className="space-y-6">
                                             <div className="flex items-center gap-3 text-[0.68rem] uppercase tracking-[0.42em] text-[#8c7457]">
-                                                <span className="h-px flex-1 bg-[#cfbe9e]" />
+                                                <span className="h-px flex-1 bg-[#b5a382]" />
                                                 Marginalia
                                             </div>
                                             <div className="space-y-4">
                                                 <h1
-                                                    className={`${headingFont.className} max-w-[10ch] text-5xl leading-[0.92] font-semibold tracking-tight text-[#1e130a] sm:text-6xl lg:text-7xl`}
+                                                    className={`${headingFont.className} max-w-[10ch] text-5xl leading-[0.92] font-semibold tracking-tight text-ink sm:text-6xl lg:text-7xl`}
                                                 >
                                                     The Living Tome
                                                 </h1>
-                                                <p className="max-w-[26rem] text-lg leading-8 text-[#4a3b2c] sm:text-xl">
+                                                <p className="max-w-[26rem] text-lg leading-8 text-[#5a4634] sm:text-xl">
                                                     Within these pages lie
                                                     fragments of a life
                                                     stretched across centuries.
@@ -207,9 +208,9 @@ export default function Home() {
                                             </div>
                                         </div>
 
-                                        <div className="space-y-4 border-t border-[#d8caae]/80 pt-6">
+                                        <div className="space-y-4 border-t border-[#c2b08d]/80 pt-6">
                                             <div className="flex items-center gap-3 text-[0.72rem] uppercase tracking-[0.35em] text-[#8c7457]">
-                                                <span className="h-px flex-1 bg-[#cfbe9e]" />
+                                                <span className="h-px flex-1 bg-[#b5a382]" />
                                                 Field notes
                                             </div>
                                             <ul className="space-y-3">
@@ -217,7 +218,7 @@ export default function Home() {
                                                     (clue, clueIndex) => (
                                                         <motion.li
                                                             key={clue}
-                                                            className="flex items-start gap-3 text-base leading-7 text-[#3d2f21]"
+                                                            className="flex items-start gap-3 text-base leading-7 text-[#4a3828]"
                                                             initial={{
                                                                 opacity: 0,
                                                                 x: -8,
@@ -233,7 +234,7 @@ export default function Home() {
                                                                         0.12,
                                                             }}
                                                         >
-                                                            <span className="mt-2 h-2 w-2 rounded-full bg-[#8c2a36] shadow-[0_0_0_3px_rgba(140,42,54,0.15)]" />
+                                                            <span className="mt-2 h-2 w-2 rounded-full bg-[var(--blood)] shadow-[0_0_0_3px_rgba(136,19,55,0.2)]" />
                                                             <span>{clue}</span>
                                                         </motion.li>
                                                     ),
@@ -243,14 +244,15 @@ export default function Home() {
                                     </div>
                                 </motion.aside>
 
+                                {/* Right Page */}
                                 <motion.section
-                                    className="relative overflow-hidden bg-[linear-gradient(180deg,#fbf7ee,#ece2cc)] px-5 py-6 text-ink shadow-[inset_14px_0_28px_rgba(72,52,32,0.07),inset_0_1px_0_rgba(255,255,255,0.8)] sm:px-8 sm:py-8"
+                                    className="relative overflow-hidden bg-[linear-gradient(180deg,var(--page-top),var(--page-bottom-right))] px-5 py-6 text-ink shadow-[inset_14px_0_28px_rgba(72,52,32,0.12),inset_0_1px_0_rgba(255,255,255,0.4)] sm:px-8 sm:py-8"
                                     initial={{ opacity: 0, x: 18 }}
                                     animate={{ opacity: 1, x: 0 }}
                                     transition={{ duration: 0.8, delay: 0.18 }}
                                 >
-                                    <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_80%_16%,rgba(255,255,255,0.35),transparent_24%),linear-gradient(90deg,rgba(110,80,45,0.04),transparent_12%,transparent_88%,rgba(110,80,45,0.06))] opacity-80" />
-                                    <div className="pointer-events-none absolute inset-y-0 left-0 w-8 bg-[linear-gradient(to_left,transparent,rgba(70,48,22,0.12))]" />
+                                    <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_80%_16%,rgba(255,255,255,0.2),transparent_24%),linear-gradient(90deg,rgba(70,48,22,0.05),transparent_12%,transparent_88%,rgba(70,48,22,0.07))] opacity-80" />
+                                    <div className="pointer-events-none absolute inset-y-0 left-0 w-8 bg-[linear-gradient(to_left,transparent,rgba(40,28,12,0.15))]" />
                                     <div className="relative flex min-h-[31rem] flex-col">
                                         <div className="mb-6 flex items-start justify-between gap-4">
                                             <div>
@@ -258,7 +260,7 @@ export default function Home() {
                                                     Chapter I
                                                 </p>
                                                 <h2
-                                                    className={`${headingFont.className} mt-2 text-4xl font-semibold tracking-tight text-[#1e130a] sm:text-5xl`}
+                                                    className={`${headingFont.className} mt-2 text-4xl font-semibold tracking-tight text-ink sm:text-5xl`}
                                                 >
                                                     The page remembers.
                                                 </h2>
@@ -266,7 +268,7 @@ export default function Home() {
 
                                             <motion.button
                                                 type="button"
-                                                className="rounded-full border border-[#c2b293] bg-[#f5ede0] px-4 py-2 text-[0.68rem] uppercase tracking-[0.3em] text-[#4a3828] shadow-sm backdrop-blur-sm transition-colors hover:bg-white"
+                                                className="rounded-full border border-[#c2b08d] bg-[#e3d3b3]/50 px-4 py-2 text-[0.68rem] uppercase tracking-[0.3em] text-[#3d2f21] shadow-sm backdrop-blur-sm transition-colors hover:bg-[#ebdcc2] hover:text-ink"
                                                 onClick={() =>
                                                     setCycle(
                                                         (value) => value + 1,
@@ -288,7 +290,7 @@ export default function Home() {
                                         </div>
 
                                         <div className="relative flex flex-1 flex-col justify-between gap-8">
-                                            <div className="space-y-6 text-xl leading-9 tracking-[0.01em] text-[#24170d] sm:text-[1.35rem] sm:leading-[2.4rem]">
+                                            <div className="space-y-6 text-xl leading-9 tracking-[0.01em] text-ink sm:text-[1.35rem] sm:leading-[2.4rem]">
                                                 <motion.p
                                                     key={cycle}
                                                     className="max-w-[32rem] whitespace-pre-line"
@@ -302,7 +304,7 @@ export default function Home() {
                                                 </motion.p>
                                             </div>
 
-                                            <div className="flex flex-wrap items-center justify-between gap-4 border-t border-[#d8caae]/80 pt-5 text-[0.78rem] uppercase tracking-[0.32em] text-[#8c7457]">
+                                            <div className="flex flex-wrap items-center justify-between gap-4 border-t border-[#c2b08d]/80 pt-5 text-[0.78rem] uppercase tracking-[0.32em] text-[#8c7457]">
                                                 <span>
                                                     Speak softly. The page is
                                                     listening.
