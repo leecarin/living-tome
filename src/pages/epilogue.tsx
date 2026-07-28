@@ -1,4 +1,6 @@
 import { useEffect, useState, useMemo } from "react";
+import { useSetAtom, useAtomValue } from "jotai";
+import { isAnimatingAtom, skipAnimationSignalAtom } from "@/store/animation";
 import { motion, useReducedMotion } from "motion/react";
 import { Nothing_You_Could_Do } from "next/font/google";
 import TomeLayout from "@/components/TomeLayout";
@@ -32,6 +34,15 @@ export default function EpiloguePage() {
     const [revealCount, setRevealCount] = useState(0);
     const [cycle, setCycle] = useState(0);
 
+    const setIsAnimating = useSetAtom(isAnimatingAtom);
+    const skipSignal = useAtomValue(skipAnimationSignalAtom);
+
+    // Track the skipSignal counter at the start of the current cycle
+    const [startSkipSignal, setStartSkipSignal] = useState(skipSignal);
+
+    // Pure state comparison during render - fully compliant with React 19 / Compiler rules
+    const isSkipped = skipSignal > startSkipSignal;
+
     // Split passage into individual paragraphs by double newlines
     const paragraphs = useMemo(() => passage.split(/\n\n/), []);
 
@@ -42,8 +53,15 @@ export default function EpiloguePage() {
 
     const leftPassageFull = leftPassageParagraphs.join("\n\n");
 
+    // Handle character-by-character typewriter animation
     useEffect(() => {
-        if (prefersReducedMotion) return;
+        // If reduced motion is on or skipped, mark animation as finished
+        if (prefersReducedMotion || isSkipped) {
+            setIsAnimating(false);
+            return;
+        }
+
+        setIsAnimating(true);
 
         let cancelled = false;
         let timeoutId = 0;
@@ -55,7 +73,10 @@ export default function EpiloguePage() {
             index += 1;
             setRevealCount(index);
 
-            if (index >= passage.length) return;
+            if (index >= passage.length) {
+                setIsAnimating(false);
+                return;
+            }
 
             const currentChar = passage[index - 1];
             const nextDelay =
@@ -74,9 +95,11 @@ export default function EpiloguePage() {
             cancelled = true;
             window.clearTimeout(timeoutId);
         };
-    }, [cycle, prefersReducedMotion]);
+    }, [cycle, prefersReducedMotion, isSkipped, setIsAnimating]);
 
-    const effectiveCount = prefersReducedMotion ? passage.length : revealCount;
+    // Derived count: if reduced motion or skipped, show full text instantly
+    const effectiveCount =
+        prefersReducedMotion || isSkipped ? passage.length : revealCount;
     const revealedText = passage.slice(0, effectiveCount);
 
     // Slice cleanly between pages based on paragraph distribution
@@ -90,6 +113,7 @@ export default function EpiloguePage() {
         : [];
 
     const handleRefreshInk = () => {
+        setStartSkipSignal(skipSignal);
         setRevealCount(0);
         setCycle((c) => c + 1);
     };

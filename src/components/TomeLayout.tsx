@@ -1,6 +1,7 @@
 import Head from "next/head";
 import { ReactNode } from "react";
 import { motion, useReducedMotion } from "motion/react";
+import SkipAnimationButton from "@/components/ui/SkipAnimationButton";
 
 interface TomeLayoutProps {
     title: string;
@@ -39,23 +40,30 @@ export default function TomeLayout({
                     <div className="mb-5 flex items-center justify-between gap-4 px-1 text-[0.68rem] uppercase tracking-[0.48em] text-foreground-soft">
                         <span>{headerLabel}</span>
 
-                        {onRefreshInk && (
-                            <motion.button
-                                type="button"
-                                className="rounded-full border border-[#c2b293] bg-[#f5ede0] px-4 py-2 text-[0.68rem] uppercase tracking-[0.3em] text-[#4a3828] shadow-sm backdrop-blur-sm transition-colors hover:bg-white"
-                                onClick={onRefreshInk}
-                                whileHover={
-                                    prefersReducedMotion ? undefined : { y: -2 }
-                                }
-                                whileTap={
-                                    prefersReducedMotion
-                                        ? undefined
-                                        : { scale: 0.98 }
-                                }
-                            >
-                                Refresh ink
-                            </motion.button>
-                        )}
+                        <div className="flex items-center gap-3">
+                            {/* Unveil Full Page Button */}
+                            <SkipAnimationButton />
+
+                            {onRefreshInk && (
+                                <motion.button
+                                    type="button"
+                                    className="btn-ink"
+                                    onClick={onRefreshInk}
+                                    whileHover={
+                                        prefersReducedMotion
+                                            ? undefined
+                                            : { y: -2 }
+                                    }
+                                    whileTap={
+                                        prefersReducedMotion
+                                            ? undefined
+                                            : { scale: 0.98 }
+                                    }
+                                >
+                                    Refresh ink
+                                </motion.button>
+                            )}
+                        </div>
                     </div>
 
                     {/* Dark Gray Outer Tome Cover */}

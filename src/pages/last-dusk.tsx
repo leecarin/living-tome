@@ -1,4 +1,6 @@
 import { useEffect, useState, useMemo } from "react";
+import { useSetAtom, useAtomValue } from "jotai";
+import { isAnimatingAtom, skipAnimationSignalAtom } from "@/store/animation";
 import { motion, useReducedMotion } from "motion/react";
 import { Nothing_You_Could_Do } from "next/font/google";
 import TomeLayout from "@/components/TomeLayout";
@@ -37,20 +39,35 @@ export default function LastDuskPage() {
     const [revealCount, setRevealCount] = useState(0);
     const [cycle, setCycle] = useState(0);
 
+    const setIsAnimating = useSetAtom(isAnimatingAtom);
+    const skipSignal = useAtomValue(skipAnimationSignalAtom);
+
+    // Track the skipSignal counter at the start of the current cycle
+    const [startSkipSignal, setStartSkipSignal] = useState(skipSignal);
+
+    // Pure state comparison during render - fully compliant with React 19 rules
+    const isSkipped = skipSignal > startSkipSignal;
+
     // Split passage into individual paragraphs by double newlines
     const paragraphs = useMemo(() => passage.split(/\n\n/), []);
 
-    // Decide how many paragraphs fit on the left page (e.g., roughly half of them)
+    // Decide how many paragraphs fit on the left page
     const leftParagraphCount = Math.ceil(paragraphs.length / 2);
 
     const leftPassageParagraphs = paragraphs.slice(0, leftParagraphCount);
     const rightPassageParagraphs = paragraphs.slice(leftParagraphCount);
 
     const leftPassageFull = leftPassageParagraphs.join("\n\n");
-    const rightPassageFull = rightPassageParagraphs.join("\n\n");
 
+    // Handle character-by-character typewriter animation
     useEffect(() => {
-        if (prefersReducedMotion) return;
+        // If reduced motion is on or skipped, mark animation as finished
+        if (prefersReducedMotion || isSkipped) {
+            setIsAnimating(false);
+            return;
+        }
+
+        setIsAnimating(true);
 
         let cancelled = false;
         let timeoutId = 0;
@@ -62,7 +79,10 @@ export default function LastDuskPage() {
             index += 1;
             setRevealCount(index);
 
-            if (index >= passage.length) return;
+            if (index >= passage.length) {
+                setIsAnimating(false);
+                return;
+            }
 
             const currentChar = passage[index - 1];
             const nextDelay =
@@ -81,25 +101,27 @@ export default function LastDuskPage() {
             cancelled = true;
             window.clearTimeout(timeoutId);
         };
-    }, [cycle, prefersReducedMotion]);
+    }, [cycle, prefersReducedMotion, isSkipped, setIsAnimating]);
 
-    const effectiveCount = prefersReducedMotion ? passage.length : revealCount;
+    // Derived count: if reduced motion or skipped, show full text instantly
+    const effectiveCount =
+        prefersReducedMotion || isSkipped ? passage.length : revealCount;
 
-    // Slice the revealed text up to the current animation counter
+    // Slice the revealed text up to the current character counter
     const revealedText = passage.slice(0, effectiveCount);
 
-    // Split the currently revealed text between left and right based on character lengths
+    // Split the currently revealed text between left and right pages
     const leftCharLimit = leftPassageFull.length;
     const leftRevealed = revealedText.slice(0, leftCharLimit);
     const rightRevealed = revealedText.slice(leftCharLimit);
 
-    // Convert revealed chunks back into arrays of paragraphs for proper multi-paragraph rendering
     const leftDisplayedParagraphs = leftRevealed.split(/\n\n/);
     const rightDisplayedParagraphs = rightRevealed
         ? rightRevealed.split(/\n\n/)
         : [];
 
     const handleRefreshInk = () => {
+        setStartSkipSignal(skipSignal);
         setRevealCount(0);
         setCycle((c) => c + 1);
     };
@@ -111,7 +133,7 @@ export default function LastDuskPage() {
             onRefreshInk={handleRefreshInk}
             leftPage={
                 <div className="space-y-5">
-                    {/* Page Header with Inline Horizontal Line */}
+                    {/* Page Header */}
                     <div className="flex items-center gap-3 text-[0.66rem] uppercase tracking-[0.4em] text-[#8c7457]">
                         <span>{chapterTitle}</span>
                         <span className="h-px flex-1 bg-[#c2b293]/60" />
@@ -129,7 +151,7 @@ export default function LastDuskPage() {
             }
             rightPage={
                 <div className="space-y-5">
-                    {/* Page Header with Inline Horizontal Line */}
+                    {/* Page Header */}
                     <div className="flex items-center gap-3 text-[0.66rem] uppercase tracking-[0.4em] text-[#8c7457]">
                         <span>{chapterTitle}</span>
                         <span className="h-px flex-1 bg-[#c2b293]/60" />
