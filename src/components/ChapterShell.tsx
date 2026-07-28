@@ -1,6 +1,9 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState, type ReactNode } from "react";
+import { useAtomValue } from "jotai";
+import { authAtom } from "@/store/auth";
+import { logoutUser } from "@/lib/firebase/auth";
 
 const chapters = [
     { href: "/", label: "Home Page", code: "I", category: "Front leaf" },
@@ -23,6 +26,17 @@ export default function ChapterShell({ children }: { children: ReactNode }) {
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [isMobileOpen, setIsMobileOpen] = useState(false);
 
+    const { user } = useAtomValue(authAtom);
+
+    const handleLogout = async () => {
+        try {
+            await logoutUser();
+            router.push("/auth");
+        } catch (error) {
+            console.error("Failed to sign out:", error);
+        }
+    };
+
     return (
         <div className="min-h-screen lg:flex">
             {/* Mobile Header Bar */}
@@ -36,7 +50,7 @@ export default function ChapterShell({ children }: { children: ReactNode }) {
                 <button
                     type="button"
                     onClick={() => setIsMobileOpen((prev) => !prev)}
-                    className="rounded-xl border border-blood/30 bg-blood/10 px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-ember hover:bg-blood/20"
+                    className="rounded-xl border border-mist/30 bg-mist/10 px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-ember hover:bg-moonlight/20"
                     aria-label="Toggle Navigation"
                 >
                     {isMobileOpen ? "Close Index" : "Chapter Index"}
@@ -45,7 +59,7 @@ export default function ChapterShell({ children }: { children: ReactNode }) {
 
             {/* Sidebar Shell */}
             <aside
-                className={`relative flex-col border-b border-blood/20 bg-gradient-to-b from-slate-900/98 to-slate-950/98 text-foreground shadow-2xl transition-all duration-300 ease-in-out lg:sticky lg:top-0 lg:flex lg:h-screen lg:border-b-0 lg:border-r lg:border-blood/25 ${
+                className={`relative flex-col border-b border-mist/20 bg-gradient-to-b from-slate-900/98 to-slate-950/98 text-foreground shadow-2xl transition-all duration-300 ease-in-out lg:sticky lg:top-0 lg:flex lg:h-screen lg:border-b-0 lg:border-r lg:border-mist/25 ${
                     isMobileOpen ? "flex px-4 py-5" : "hidden lg:flex"
                 } ${
                     isCollapsed
@@ -76,7 +90,7 @@ export default function ChapterShell({ children }: { children: ReactNode }) {
                             <button
                                 type="button"
                                 onClick={() => setIsCollapsed((prev) => !prev)}
-                                className="hidden rounded-lg border border-blood/20 bg-white/[0.04] p-1.5 text-xs text-foreground-soft transition-colors hover:border-blood/50 hover:bg-blood/10 hover:text-ember lg:block"
+                                className="hidden rounded-lg border border-blood/20 bg-white/[0.04] p-1.5 text-xs text-foreground-soft transition-colors hover:border-mist/50 hover:bg-mist/10 hover:text-moonlight lg:block"
                                 title={
                                     isCollapsed
                                         ? "Expand Sidebar"
@@ -140,18 +154,18 @@ export default function ChapterShell({ children }: { children: ReactNode }) {
                                             : "px-4 py-3.5 text-left"
                                     } ${
                                         isActive
-                                            ? "border-blood/70 bg-blood/20 text-foreground shadow-chapter-active"
-                                            : "border-foreground/10 bg-white/[0.04] text-foreground-soft hover:border-blood/40 hover:bg-blood/10 hover:text-foreground"
+                                            ? "border-mist/70 bg-mist/20 text-foreground shadow-chapter-active"
+                                            : "border-foreground/10 bg-white/[0.04] text-foreground-soft hover:border-mist/40 hover:bg-mist/10 hover:text-foreground"
                                     }`}
                                 >
                                     {/* Active Left Bookmark Strip */}
                                     {isActive && (
-                                        <span className="shadow-bookmark-glow absolute inset-y-2.5 left-0 w-1 rounded-r-full bg-ember" />
+                                        <span className="shadow-bookmark-glow absolute inset-y-2.5 left-0 w-1 rounded-r-full bg-blood" />
                                     )}
 
                                     {/* Icon Indicator when collapsed */}
                                     {isCollapsed ? (
-                                        <span className="text-lg">
+                                        <span className="text-lg font-serif">
                                             {chapter.code}
                                         </span>
                                     ) : (
@@ -159,13 +173,11 @@ export default function ChapterShell({ children }: { children: ReactNode }) {
                                             <span
                                                 className={`block text-[0.68rem] font-medium uppercase tracking-[0.38em] transition-colors ${
                                                     isActive
-                                                        ? "text-ember"
-                                                        : "text-foreground-soft group-hover:text-ember"
+                                                        ? "text-moonlight"
+                                                        : "text-mist group-hover:text-moonlight"
                                                 }`}
                                             >
-                                                {chapter.href === "/"
-                                                    ? "Front leaf"
-                                                    : "Distant leaf"}
+                                                {chapter.category}
                                             </span>
                                             <span className="mt-0.5 block truncate text-base font-medium leading-6">
                                                 {chapter.label}
@@ -179,12 +191,29 @@ export default function ChapterShell({ children }: { children: ReactNode }) {
 
                     {/* Footer Callout */}
                     {!isCollapsed && (
-                        <div className="mt-auto hidden rounded-2xl border border-blood/20 bg-blood/[0.06] px-4 py-4 text-sm leading-6 text-foreground-soft lg:block">
-                            <span className="block text-xs font-semibold uppercase tracking-widest text-blood-light/70">
-                                Bound in Blood
+                        <div className="mt-auto hidden rounded-2xl border border-mist/20 bg-mist/[0.09] p-4 lg:block">
+                            <span className="whitespace-nowrap text-[0.68rem] font-medium uppercase tracking-[0.5em] text-blood-light/80">
+                                Keeper Access
                             </span>
-                            A quiet shelf of chapters waits here, bound in slate
-                            and memory.
+
+                            {user ? (
+                                <div className="mt-2 space-y-2">
+                                    <button
+                                        type="button"
+                                        onClick={handleLogout}
+                                        className="block w-full tracking-widest rounded-lg bg-moonlight/10 px-2 py-1.5 text-left text-sm font-medium leading-6 text-foreground-soft transition-colors hover:bg-mist/30 hover:text-foreground"
+                                    >
+                                        Log Out
+                                    </button>
+                                </div>
+                            ) : (
+                                <Link
+                                    href="/auth"
+                                    className="mt-1 block rounded-lg px-2 py-1.5 text-sm leading-6 text-foreground-soft transition-colors hover:bg-moonlight/10 hover:text-foreground"
+                                >
+                                    Enter the Scriptorium →
+                                </Link>
+                            )}
                         </div>
                     )}
                 </div>
