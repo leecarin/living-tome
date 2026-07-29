@@ -1,0 +1,35 @@
+name: CI & Tests
+
+on:
+    push:
+        branches: [main, master]
+    pull_request:
+        branches: [main, master]
+
+jobs:
+    test:
+        name: Run Unit Tests & Lint
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+                  cache: "npm"
+
+            - name: Install dependencies
+              run: npm ci
+
+            - name: Run Type Check
+              run: npx tsc --noEmit
+
+            - name: Run ESLint
+              run: npm run lint
+              continue-on-error: false
+
+            - name: Run Jest Unit Tests
+              run: npm test -- --ci --maxWorkers=2
