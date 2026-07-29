@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Nothing+You+Could+Do&display=swap");
 @import "tailwindcss";
 
 :root {
@@ -39,6 +40,17 @@
     --color-mist: var(--mist);
     --color-moonlight: var(--moonlight);
     --color-gold: var(--gold);
+}
+
+@utility chapter-title {
+    @apply flex items-center gap-3 text-[0.66rem] uppercase tracking-[0.4em] text-[#8c7457];
+}
+
+@utility chapter-body {
+    @apply space-y-4 text-[1.3rem] leading-[2.4rem] text-[#24170d];
+    font-family: "Nothing You Could Do", cursive;
+    font-weight: 400;
+    font-style: normal;
 }
 
 html,

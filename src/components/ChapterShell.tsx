@@ -50,7 +50,7 @@ export default function ChapterShell({ children }: { children: ReactNode }) {
                 <button
                     type="button"
                     onClick={() => setIsMobileOpen((prev) => !prev)}
-                    className="rounded-xl border border-mist/30 bg-mist/10 px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-ember hover:bg-moonlight/20"
+                    className="rounded-xl border-2 border-mist/30 bg-mist/30 px-3 py-1.5 text-xs uppercase tracking-widest text-moonlight hover:bg-moonlight/30"
                     aria-label="Toggle Navigation"
                 >
                     {isMobileOpen ? "Close Index" : "Chapter Index"}

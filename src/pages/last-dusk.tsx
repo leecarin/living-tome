@@ -2,7 +2,6 @@ import { useEffect, useState, useMemo } from "react";
 import { useSetAtom, useAtomValue } from "jotai";
 import { isAnimatingAtom, skipAnimationSignalAtom } from "@/store/animation";
 import { motion, useReducedMotion } from "motion/react";
-import { Nothing_You_Could_Do } from "next/font/google";
 import TomeLayout from "@/components/TomeLayout";
 import {
     LETTER_REVEAL_BASE_DELAY_MS,
@@ -10,8 +9,6 @@ import {
     LETTER_REVEAL_LINE_BREAK_DELAY_MS,
     LETTER_REVEAL_PUNCTUATION_DELAY_MS,
 } from "@/lib/chapterTiming";
-
-const bodyFont = Nothing_You_Could_Do({ weight: "400" });
 
 const passage =
     "The dusk elves mistook fear for righteousness.\n\n" +
@@ -134,15 +131,13 @@ export default function LastDuskPage() {
             leftPage={
                 <div className="space-y-5">
                     {/* Page Header */}
-                    <div className="flex items-center gap-3 text-[0.66rem] uppercase tracking-[0.4em] text-[#8c7457]">
+                    <div className="chapter-title">
                         <span>{chapterTitle}</span>
                         <span className="h-px flex-1 bg-[#c2b293]/60" />
                     </div>
 
                     {/* Page Body Text */}
-                    <div
-                        className={`${bodyFont.className} space-y-4 text-[1.3rem] leading-[2.4rem] text-[#24170d]`}
-                    >
+                    <div className={`chapter-body`}>
                         {leftDisplayedParagraphs.map((para, idx) => (
                             <p key={idx}>{para}</p>
                         ))}
@@ -152,16 +147,13 @@ export default function LastDuskPage() {
             rightPage={
                 <div className="space-y-5">
                     {/* Page Header */}
-                    <div className="flex items-center gap-3 text-[0.66rem] uppercase tracking-[0.4em] text-[#8c7457]">
+                    <div className="chapter-title">
                         <span>{chapterTitle}</span>
                         <span className="h-px flex-1 bg-[#c2b293]/60" />
                     </div>
 
                     {/* Page Body Text */}
-                    <motion.div
-                        key={cycle}
-                        className={`${bodyFont.className} space-y-4 text-[1.3rem] leading-[2.4rem] text-[#24170d]`}
-                    >
+                    <motion.div key={cycle} className={`chapter-body`}>
                         {rightDisplayedParagraphs.map((para, idx) => (
                             <p key={idx}>{para}</p>
                         ))}
