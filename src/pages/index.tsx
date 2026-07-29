@@ -20,9 +20,9 @@ const bodyFont = Crimson_Text({
 });
 
 const tomeScript =
-    "The mists do not merely conceal—they remember.\n\n" +
-    "Within these pages are preserved moments that time itself sought to erase.\n\n" +
-    "Read with care, for every memory carries a price, and not every truth was meant to be uncovered.";
+    "The mists remember.\n\n" +
+    "Within these pages are moments preserved against the censure of time.\n\n" +
+    "Read with care, for every memory carries a price, and not every truth wishes to be uncovered.";
 
 const clues = [
     "Sacrifice opens every door worth entering.",
@@ -198,7 +198,7 @@ export default function Home() {
                                                 >
                                                     The Living Tome
                                                 </h1>
-                                                <p className="max-w-[26rem] text-lg leading-8 text-[#5a4634] sm:text-xl">
+                                                <p className="max-w-[26rem] text-l leading-8 text-ink/85 sm:text-xl">
                                                     Within these pages lie
                                                     fragments of a life
                                                     stretched across centuries.
@@ -291,7 +291,7 @@ export default function Home() {
                                         </div>
 
                                         <div className="relative flex flex-1 flex-col justify-between gap-8">
-                                            <div className="space-y-6 text-xl leading-9 tracking-[0.01em] text-ink sm:text-[1.35rem] sm:leading-[2.4rem]">
+                                            <div className="space-y-6 text-l leading-9 tracking-[0.01em] text-ink/85 sm:text-[1.2rem] sm:leading-[1.4rem]">
                                                 <motion.p
                                                     key={cycle}
                                                     className="max-w-[32rem] whitespace-pre-line"
