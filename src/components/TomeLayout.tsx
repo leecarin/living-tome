@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { ReactNode } from "react";
+import { useMemo, ReactNode } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import SkipAnimationButton from "@/components/ui/SkipAnimationButton";
 
@@ -7,20 +7,85 @@ interface TomeLayoutProps {
     title: string;
     description?: string;
     headerLabel: string;
-    leftPage: ReactNode;
-    rightPage: ReactNode;
+    passage?: string;
+    revealedCount?: number;
+    cycle?: number;
     onRefreshInk?: () => void;
+    leftPage?: ReactNode;
+    rightPage?: ReactNode;
 }
 
 export default function TomeLayout({
     title,
     description = "An interactive tome page.",
     headerLabel,
+    passage,
+    revealedCount,
+    cycle = 0,
+    onRefreshInk,
     leftPage,
     rightPage,
-    onRefreshInk,
 }: TomeLayoutProps) {
     const prefersReducedMotion = useReducedMotion();
+
+    // Internal passage split logic
+    const { leftDisplayedParagraphs, rightDisplayedParagraphs } =
+        useMemo(() => {
+            if (!passage) {
+                return {
+                    leftDisplayedParagraphs: [],
+                    rightDisplayedParagraphs: [],
+                };
+            }
+
+            const paragraphs = passage.split(/\n\n/);
+            const leftParagraphCount = Math.ceil(paragraphs.length / 2);
+            const leftPassageFull = paragraphs
+                .slice(0, leftParagraphCount)
+                .join("\n\n");
+
+            const effectiveCount = revealedCount ?? passage.length;
+            const revealedText = passage.slice(0, effectiveCount);
+
+            const leftCharLimit = leftPassageFull.length;
+            const leftRevealed = revealedText.slice(0, leftCharLimit);
+            const rightRevealed = revealedText.slice(leftCharLimit);
+
+            return {
+                leftDisplayedParagraphs: leftRevealed.split(/\n\n/),
+                rightDisplayedParagraphs: rightRevealed
+                    ? rightRevealed.split(/\n\n/)
+                    : [],
+            };
+        }, [passage, revealedCount]);
+
+    const renderedLeftPage = leftPage ?? (
+        <div className="space-y-5">
+            <div className="chapter-title">
+                <span>{headerLabel}</span>
+                <span className="h-px flex-1 bg-[#c2b293]/60" />
+            </div>
+            <div className="chapter-body">
+                {leftDisplayedParagraphs.map((para, idx) => (
+                    <p key={idx}>{para}</p>
+                ))}
+            </div>
+        </div>
+    );
+
+    const renderedRightPage = rightPage ?? (
+        <div className="space-y-5">
+            <div className="chapter-title">
+                <span>{headerLabel}</span>
+                <span className="h-px flex-1 bg-[#c2b293]/60" />
+            </div>
+            <motion.div key={cycle} className="chapter-body">
+                {rightDisplayedParagraphs.map((para, idx) => (
+                    <p key={idx}>{para}</p>
+                ))}
+            </motion.div>
+        </div>
+    );
 
     return (
         <>
@@ -41,7 +106,6 @@ export default function TomeLayout({
                         <span>{headerLabel}</span>
 
                         <div className="flex items-center gap-3">
-                            {/* Unveil Full Page Button */}
                             <SkipAnimationButton />
 
                             {onRefreshInk && (
@@ -90,7 +154,7 @@ export default function TomeLayout({
                             <div className="relative min-h-[31rem] overflow-hidden bg-[linear-gradient(180deg,var(--page-top),var(--page-bottom-left))] px-5 py-6 text-ink shadow-[inset_-14px_0_28px_rgba(72,52,32,0.08),inset_0_1px_0_rgba(255,255,255,0.8)] sm:px-8 sm:py-8">
                                 <div className="pointer-events-none absolute inset-y-0 right-0 w-8 bg-[linear-gradient(to_right,transparent,rgba(70,48,22,0.12))]" />
                                 <div className="relative flex h-full flex-col justify-between gap-8">
-                                    {leftPage}
+                                    {renderedLeftPage}
                                 </div>
                             </div>
 
@@ -98,7 +162,7 @@ export default function TomeLayout({
                             <div className="relative min-h-[31rem] overflow-hidden bg-[linear-gradient(180deg,var(--page-top),var(--page-bottom-right))] px-5 py-6 text-ink shadow-[inset_14px_0_28px_rgba(72,52,32,0.07),inset_0_1px_0_rgba(255,255,255,0.8)] sm:px-8 sm:py-8">
                                 <div className="pointer-events-none absolute inset-y-0 left-0 w-8 bg-[linear-gradient(to_left,transparent,rgba(70,48,22,0.12))]" />
                                 <div className="relative flex h-full flex-col justify-between gap-8">
-                                    {rightPage}
+                                    {renderedRightPage}
                                 </div>
                             </div>
                         </div>
