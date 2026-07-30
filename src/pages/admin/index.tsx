@@ -202,16 +202,12 @@ export default function AdminDashboard() {
             <p className="text-xs font-medium uppercase tracking-[0.45em] text-blood-light/80">
               Keeper Scriptorium
             </p>
-            <h1 className="mt-1 font-serif text-3xl font-semibold text-page-top">
+            <h1 className="mt-1 font-serif text-3xl text-page-top tracking-wider">
               Manage Tome Leaves
             </h1>
           </div>
 
-          <button
-            type="button"
-            onClick={openCreateModal}
-            className="inline-flex items-center gap-2 rounded-xl border border-blood/40 bg-blood/20 px-4 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-blood/30"
-          >
+          <button type="button" onClick={openCreateModal} className="btn-draft">
             <svg
               className="h-4 w-4"
               fill="none"
@@ -236,7 +232,7 @@ export default function AdminDashboard() {
         )}
 
         {/* Leaves Management Table / Cards */}
-        <div className="rounded-2xl border border-blood/20 bg-slate-950/60 p-6 backdrop-blur-sm">
+        <div className="rounded-2xl border border-moonlight/20 bg-mist/8 p-6 backdrop-blur-sm">
           <h2 className="mb-4 font-serif text-xl font-medium text-page-top">
             Your Authored Pages
           </h2>
@@ -251,7 +247,7 @@ export default function AdminDashboard() {
               above.
             </p>
           ) : (
-            <div className="divide-y divide-blood/10">
+            <div className="divide-y divide-mist/50">
               {leaves.map((leaf) => (
                 <div
                   key={leaf.id}
@@ -273,11 +269,11 @@ export default function AdminDashboard() {
                       </span>
                     </div>
 
-                    <h3 className="font-serif text-lg font-medium text-foreground">
+                    <h3 className="font-serif text-lg font-medium text-foreground tracking-wider">
                       {leaf.title}
                     </h3>
 
-                    <p className="text-xs text-foreground-soft">
+                    <p className="text-sm text-foreground-soft btn-font">
                       Last revised on {formatUpdatedAt(leaf)}
                     </p>
                   </div>
@@ -288,7 +284,7 @@ export default function AdminDashboard() {
                     <button
                       type="button"
                       onClick={() => handleCopyLink(leaf)}
-                      className="rounded-lg border border-blood/20 bg-white/[0.03] px-3 py-1.5 text-xs font-medium text-foreground-soft transition-colors hover:border-blood/40 hover:text-foreground"
+                      className="btn-action-compact"
                     >
                       {copiedId === leaf.id ? "Copied!" : "Copy Player Link"}
                     </button>
@@ -297,7 +293,7 @@ export default function AdminDashboard() {
                     <Link
                       href={`/u/${leaf.slug}`}
                       target="_blank"
-                      className="rounded-lg border border-blood/20 bg-white/[0.03] px-3 py-1.5 text-xs font-medium text-foreground-soft transition-colors hover:border-blood/40 hover:text-foreground"
+                      className="btn-action-compact"
                     >
                       Preview
                     </Link>
@@ -307,11 +303,7 @@ export default function AdminDashboard() {
                       type="button"
                       disabled={pendingId === leaf.id}
                       onClick={() => handleToggleVisibility(leaf)}
-                      className={`rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors disabled:opacity-50 ${
-                        !leaf.is_hidden
-                          ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20"
-                          : "border-amber-500/30 bg-amber-500/10 text-amber-400 hover:bg-amber-500/20"
-                      }`}
+                      className={`btn-toggle ${!leaf.is_hidden ? "btn-toggle-public" : "btn-toggle-hidden"}`}
                     >
                       {!leaf.is_hidden ? "Public" : "Hidden"}
                     </button>
@@ -320,7 +312,7 @@ export default function AdminDashboard() {
                     <button
                       type="button"
                       onClick={() => openEditModal(leaf)}
-                      className="rounded-lg border border-blood/30 bg-blood/10 px-3 py-1.5 text-xs font-medium text-ember transition-colors hover:bg-blood/20"
+                      className="btn-edit"
                     >
                       Edit
                     </button>
@@ -330,9 +322,9 @@ export default function AdminDashboard() {
                       type="button"
                       disabled={pendingId === leaf.id}
                       onClick={() => handleDelete(leaf)}
-                      className="rounded-lg border border-red-900/40 bg-red-950/20 px-3 py-1.5 text-xs font-medium text-red-400 hover:bg-red-900/30 disabled:opacity-50"
+                      className="btn-delete"
                     >
-                      Strike
+                      Delete
                     </button>
                   </div>
                 </div>

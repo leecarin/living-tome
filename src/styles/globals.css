@@ -1,4 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Nothing+You+Could+Do&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap');
 @import "tailwindcss";
 
 :root {
@@ -165,4 +166,63 @@ body {
 .btn-ink:focus-visible {
     outline: 2px solid #c2b293;
     outline-offset: 2px;
+}
+
+@theme {
+  --font-sans: 'Quicksand', sans-serif;
+}
+
+/* Base button font override */
+@utility btn-font {
+  font-family: 'Quicksand', sans-serif;
+  font-optical-sizing: auto;
+}
+
+/* ==========================================================================
+   BUTTON UTILITIES
+   ========================================================================== */
+
+/* Draft New Leaf Button */
+@utility btn-draft {
+  font-family: 'Quicksand', sans-serif;
+  font-optical-sizing: auto;
+  @apply inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/5 px-4 py-2.5 text-sm font-medium text-foreground transition-colors hover:border-white/40 hover:bg-white/15 tracking-wider;
+}
+
+/* Copy Link / Preview Buttons (Compact version of Draft) */
+@utility btn-action-compact {
+  font-family: 'Quicksand', sans-serif;
+  font-optical-sizing: auto;
+  @apply inline-flex items-center gap-1.5 rounded-lg border border-white/15 bg-white/[0.03] px-4 py-2 text-sm font-medium text-foreground-soft transition-colors hover:border-white/30 hover:bg-white/10 hover:text-foreground;
+}
+
+/* Visibility Toggle - Base */
+@utility btn-toggle {
+  font-family: 'Quicksand', sans-serif;
+  font-optical-sizing: auto;
+  @apply rounded-lg border px-4 py-2 text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed;
+}
+
+/* Visibility Toggle - Public Variant */
+@utility btn-toggle-public {
+  @apply border-emerald-500/30 bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20;
+}
+
+/* Visibility Toggle - Hidden Variant */
+@utility btn-toggle-hidden {
+  @apply border-amber-500/30 bg-amber-500/10 text-amber-400 hover:bg-amber-500/20;
+}
+
+/* Edit Controls Button (Sky/Blue Theme) */
+@utility btn-edit {
+  font-family: 'Quicksand', sans-serif;
+  font-optical-sizing: auto;
+  @apply rounded-lg border border-sky-500/30 bg-sky-500/10 px-4 py-2 text-sm font-medium text-sky-400 transition-colors hover:border-sky-500/50 hover:bg-sky-500/20;
+}
+
+/* Delete Button (Vibrant Red Theme) */
+@utility btn-delete {
+  font-family: 'Quicksand', sans-serif;
+  font-optical-sizing: auto;
+  @apply rounded-lg border border-red-500/40 bg-red-600/20 px-4 py-2 text-sm font-medium text-red-300 transition-colors hover:bg-red-600/35 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed;
 }
