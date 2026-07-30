@@ -203,7 +203,7 @@ export default function AdminDashboard() {
               Keeper Scriptorium
             </p>
             <h1 className="mt-1 font-serif text-3xl text-page-top tracking-wider">
-              Manage Tome Leaves
+              Manage Chapters
             </h1>
           </div>
 
@@ -273,7 +273,7 @@ export default function AdminDashboard() {
                       {leaf.title}
                     </h3>
 
-                    <p className="text-sm text-foreground-soft btn-font">
+                    <p className="text-[0.8rem] text-foreground-soft tracking-wider">
                       Last revised on {formatUpdatedAt(leaf)}
                     </p>
                   </div>

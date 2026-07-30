@@ -173,7 +173,7 @@ body {
 }
 
 /* Base button font override */
-@utility btn-font {
+@utility sans-serif-quicksand {
   font-family: 'Quicksand', sans-serif;
   font-optical-sizing: auto;
 }
