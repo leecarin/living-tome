@@ -13,8 +13,8 @@ import {
     serverTimestamp,
     Timestamp,
 } from "firebase/firestore";
-import { app } from "./client";
 
+import { app } from "../client";
 export const db = getFirestore(app);
 
 // Collection Name Constants

@@ -8,7 +8,7 @@ import {
     removeUserChapter,
     getUserTomeSequence,
     Chapter,
-} from "../firestore";
+} from "../db/firestore";
 
 import {
     collection,
