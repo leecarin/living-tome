@@ -1,70 +1,86 @@
 // src/lib/firebase/db/schema.ts
 
 import {
-    collection,
-    doc,
-    addDoc,
-    getDocs,
-    query,
-    where,
     Timestamp,
     serverTimestamp,
 } from "firebase/firestore";
 
-import { db } from "./firestore";
+/**
+ * Represents either a Firestore Timestamp or a server timestamp placeholder.
+ */
+export type FirestoreTimestamp =
+    | Timestamp
+    | ReturnType<typeof serverTimestamp>;
 
-// TypeScript interface for db schema
+/**
+ * Firestore document stored in the `chapters` collection.
+ */
 export interface ChapterDocument {
+    /** Display title shown in the Tome */
     title: string;
+
+    /** URL-friendly identifier */
     slug: string;
+
+    /** Ordering within the Tome */
     chapter_order: number;
+
+    /** Full passage text */
     passage: string;
-    user_id: string;
-    parent_chapter_id: string;
+
+    /**
+     * Owner of the chapter.
+     * null = official Interactive Tome chapter
+     */
+    user_id: string | null;
+
+    /**
+     * Original chapter this overrides.
+     *
+     * null = brand-new custom chapter
+     */
+    parent_chapter_id: string | null;
+
+    /**
+     * True if this is an official read-only chapter.
+     */
     is_original: boolean;
+
+    /**
+     * Hidden from the user's campaign.
+     */
     is_hidden: boolean;
-    created_at: ReturnType<typeof serverTimestamp> | Timestamp;
-    updated_at: ReturnType<typeof serverTimestamp> | Timestamp;
+
+    created_at: FirestoreTimestamp;
+    updated_at: FirestoreTimestamp;
 }
 
 /**
- * Seeds only Chapter 2 into the 'chapters' collection, linking back to the existing Chapter 1.
+ * Firestore document including its ID.
  */
-export async function seedExampleChapters(): Promise<string[]> {
-    const chaptersRef = collection(db, "chapters");
-
-    // 1. Fetch the existing Chapter 1 document ID from Firestore
-    let parentChapterId = "";
-    const q = query(chaptersRef, where("slug", "==", "solitary-cloy-1"));
-    const querySnapshot = await getDocs(q);
-
-    if (!querySnapshot.empty) {
-        parentChapterId = querySnapshot.docs[0].id;
-        console.log(`Found existing Chapter 1 ID: ${parentChapterId}`);
-    } else {
-        console.warn(
-            "Could not find existing Chapter 1 document with slug 'solitary-cloy-1'. Setting parent_chapter_id to empty.",
-        );
-    }
-
-    // 2. Prepare Chapter 2 Data
-    const chapter2Data: ChapterDocument = {
-        title: "The Village of Barovia (DM Customization)",
-        slug: "solitary-cloy-1-custom",
-        chapter_order: 1,
-        passage:
-            "Dense fog clings to the tall pines. As your party steps into the clearing, you spot a strange skeletal figure leaning against the gates...",
-        user_id: "usr_abc12345", // Foreign key reference to users collection ID
-        parent_chapter_id: parentChapterId, // Links to the manual Chapter 1 ID
-        is_original: false,
-        is_hidden: false,
-        created_at: Timestamp.now(),
-        updated_at: Timestamp.now(),
-    };
-
-    // 3. Insert Chapter 2
-    const docRef = await addDoc(chaptersRef, chapter2Data);
-
-    console.log(`Successfully seeded Chapter 2! Document ID: ${docRef.id}`);
-    return [docRef.id];
+export interface Chapter extends ChapterDocument {
+    id: string;
 }
+
+/**
+ * Data required when creating a chapter.
+ */
+export type CreateChapterInput = Omit<
+    ChapterDocument,
+    "created_at" | "updated_at"
+>;
+
+/**
+ * Editable fields.
+ */
+export type UpdateChapterInput = Partial<
+    Pick<
+        ChapterDocument,
+        | "title"
+        | "slug"
+        | "chapter_order"
+        | "passage"
+        | "parent_chapter_id"
+        | "is_hidden"
+    >
+>;

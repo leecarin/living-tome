@@ -1,3 +1,5 @@
+// src/lib/firebase/db/firestore.ts
+
 import {
     getFirestore,
     collection,
@@ -15,35 +17,17 @@ import {
 } from "firebase/firestore";
 
 import { app } from "../client";
+import type {
+    Chapter,
+    ChapterDocument,
+    CreateChapterInput,
+    UpdateChapterInput,
+} from "./schema";
+
 export const db = getFirestore(app);
 
 // Collection Name Constants
 export const CHAPTERS_COLLECTION = "chapters";
-
-/**
- * Chapter Model representing either an original module chapter
- * or a user-customized/forked chapter.
- */
-export interface Chapter {
-    id: string;
-    title: string;
-    slug: string;
-    passage: string;
-    chapterOrder: number;
-    userId: string | null; // null indicates original "Interactive Tome of Strahd" content
-    parentChapterId?: string | null; // Reference to original chapter if forked
-    isHidden?: boolean; // True if the DM hid this chapter from their campaign flow
-    createdAt?: Timestamp;
-    updatedAt?: Timestamp;
-}
-
-export type CreateChapterInput = Omit<
-    Chapter,
-    "id" | "createdAt" | "updatedAt"
->;
-export type UpdateChapterInput = Partial<
-    Omit<Chapter, "id" | "userId" | "createdAt" | "updatedAt">
->;
 
 /**
  * Helper to turn chapter titles into URL-friendly slugs (e.g. "The Fall of Dusk Elves" -> "the-fall-of-dusk-elves")
@@ -57,6 +41,10 @@ export function slugify(text: string): string {
         .replace(/-+/g, "-");
 }
 
+function withId(id: string, data: ChapterDocument): Chapter {
+    return { id, ...data };
+}
+
 // ============================================================================
 // 1. READ-ONLY / ORIGINAL MOD FUNCTIONS
 // ============================================================================
@@ -68,16 +56,13 @@ export async function getOriginalChapters(): Promise<Chapter[]> {
     const chaptersRef = collection(db, CHAPTERS_COLLECTION);
     const q = query(
         chaptersRef,
-        where("userId", "==", null),
-        where("isHidden", "==", false),
-        orderBy("chapterOrder", "asc"),
+        where("is_original", "==", true),
+        where("is_hidden", "==", false),
+        orderBy("chapter_order", "asc"),
     );
 
     const snapshot = await getDocs(q);
-    return snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...(doc.data() as Omit<Chapter, "id">),
-    }));
+    return snapshot.docs.map((d) => withId(d.id, d.data() as ChapterDocument));
 }
 
 /**
@@ -89,7 +74,7 @@ export async function getOriginalChapterBySlug(
     const chaptersRef = collection(db, CHAPTERS_COLLECTION);
     const q = query(
         chaptersRef,
-        where("userId", "==", null),
+        where("is_original", "==", true),
         where("slug", "==", slug),
     );
 
@@ -97,10 +82,7 @@ export async function getOriginalChapterBySlug(
     if (snapshot.empty) return null;
 
     const docSnap = snapshot.docs[0];
-    return {
-        id: docSnap.id,
-        ...(docSnap.data() as Omit<Chapter, "id">),
-    };
+    return withId(docSnap.id, docSnap.data() as ChapterDocument);
 }
 
 // ============================================================================
@@ -119,7 +101,7 @@ export async function getUserChapterByTitleOrSlug(
 
     const q = query(
         chaptersRef,
-        where("userId", "==", userId),
+        where("user_id", "==", userId),
         where("slug", "==", targetSlug),
     );
 
@@ -127,10 +109,32 @@ export async function getUserChapterByTitleOrSlug(
     if (snapshot.empty) return null;
 
     const docSnap = snapshot.docs[0];
-    return {
-        id: docSnap.id,
-        ...(docSnap.data() as Omit<Chapter, "id">),
-    };
+    return withId(docSnap.id, docSnap.data() as ChapterDocument);
+}
+
+/**
+ * Fetches every chapter owned by a user (forked overrides of original
+ * chapters and brand-new custom chapters alike). Intended for admin/dashboard
+ * views where the user manages all of their authored content in one place,
+ * as opposed to `getUserTomeSequence`, which merges overrides into the
+ * public-facing original sequence.
+ */
+export async function getUserChapters(userId: string): Promise<Chapter[]> {
+    const chaptersRef = collection(db, CHAPTERS_COLLECTION);
+    const q = query(chaptersRef, where("user_id", "==", userId));
+
+    const snapshot = await getDocs(q);
+    const chapters = snapshot.docs.map((d) =>
+        withId(d.id, d.data() as ChapterDocument),
+    );
+
+    // Sorted client-side (rather than via an `orderBy` clause) to avoid
+    // requiring a composite Firestore index on (user_id, updated_at).
+    return chapters.sort((a, b) => {
+        const aMillis = (a.updated_at as Timestamp)?.toMillis?.() ?? 0;
+        const bMillis = (b.updated_at as Timestamp)?.toMillis?.() ?? 0;
+        return bMillis - aMillis;
+    });
 }
 
 /**
@@ -144,9 +148,8 @@ export async function createUserChapter(
     const newDoc = await addDoc(chaptersRef, {
         ...input,
         slug: input.slug || slugify(input.title),
-        isHidden: input.isHidden ?? false,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
+        created_at: serverTimestamp(),
+        updated_at: serverTimestamp(),
     });
 
     return newDoc.id;
@@ -154,8 +157,8 @@ export async function createUserChapter(
 
 /**
  * Edits an existing user chapter passage and updates Firestore.
- * If the user is attempting to edit an original chapter (userId is null),
- * this automatically forks it to create a new user-owned chapter instance.
+ * If the user is attempting to edit an original chapter, this automatically
+ * forks it to create a new user-owned chapter instance.
  */
 export async function editUserChapter(
     chapterId: string,
@@ -169,25 +172,26 @@ export async function editUserChapter(
         throw new Error("Chapter not found");
     }
 
-    const currentData = docSnap.data() as Chapter;
+    const currentData = docSnap.data() as ChapterDocument;
 
     // Safety guard: Prevent modifying original content directly.
     // If it's an original chapter, fork it under the user's ID instead.
-    if (currentData.userId === null) {
+    if (currentData.is_original) {
         await createUserChapter({
             title: updates.title ?? currentData.title,
             slug: updates.slug ?? slugify(updates.title ?? currentData.title),
             passage: updates.passage ?? currentData.passage,
-            chapterOrder: updates.chapterOrder ?? currentData.chapterOrder,
-            userId,
-            parentChapterId: chapterId,
-            isHidden: updates.isHidden ?? false,
+            chapter_order: updates.chapter_order ?? currentData.chapter_order,
+            user_id: userId,
+            parent_chapter_id: chapterId,
+            is_original: false,
+            is_hidden: updates.is_hidden ?? false,
         });
         return;
     }
 
     // Verify ownership
-    if (currentData.userId !== userId) {
+    if (currentData.user_id !== userId) {
         throw new Error(
             "Unauthorized: You do not have permission to edit this chapter.",
         );
@@ -195,7 +199,7 @@ export async function editUserChapter(
 
     const payload: Record<string, unknown> = {
         ...updates,
-        updatedAt: serverTimestamp(),
+        updated_at: serverTimestamp(),
     };
 
     if (updates.title && !updates.slug) {
@@ -220,14 +224,14 @@ export async function removeUserChapter(
         throw new Error("Chapter not found");
     }
 
-    const currentData = docSnap.data() as Chapter;
+    const currentData = docSnap.data() as ChapterDocument;
 
     // Absolute Protection: Prevent deletion of original module content
-    if (currentData.userId === null) {
+    if (currentData.is_original) {
         throw new Error("Cannot delete original module chapters.");
     }
 
-    if (currentData.userId !== userId) {
+    if (currentData.user_id !== userId) {
         throw new Error(
             "Unauthorized: You do not have permission to delete this chapter.",
         );
@@ -242,7 +246,7 @@ export async function removeUserChapter(
 
 /**
  * Toggles the hidden state of a chapter for a specific user.
- * If hidden on an original chapter, forks a user reference record set to isHidden = true.
+ * If hidden on an original chapter, forks a user reference record set to is_hidden = true.
  */
 export async function toggleChapterVisibility(
     chapterId: string,
@@ -254,23 +258,24 @@ export async function toggleChapterVisibility(
 
     if (!docSnap.exists()) return;
 
-    const currentData = docSnap.data() as Chapter;
+    const currentData = docSnap.data() as ChapterDocument;
 
-    if (currentData.userId === null) {
+    if (currentData.is_original) {
         // Fork original chapter as a hidden user preference record
         await createUserChapter({
             title: currentData.title,
             slug: currentData.slug,
             passage: currentData.passage,
-            chapterOrder: currentData.chapterOrder,
-            userId,
-            parentChapterId: chapterId,
-            isHidden,
+            chapter_order: currentData.chapter_order,
+            user_id: userId,
+            parent_chapter_id: chapterId,
+            is_original: false,
+            is_hidden: isHidden,
         });
-    } else if (currentData.userId === userId) {
+    } else if (currentData.user_id === userId) {
         await updateDoc(chapterRef, {
-            isHidden,
-            updatedAt: serverTimestamp(),
+            is_hidden: isHidden,
+            updated_at: serverTimestamp(),
         });
     }
 }
@@ -285,30 +290,28 @@ export async function getUserTomeSequence(userId: string): Promise<Chapter[]> {
     // 1. Fetch all original chapters
     const originalQ = query(
         chaptersRef,
-        where("userId", "==", null),
-        orderBy("chapterOrder", "asc"),
+        where("is_original", "==", true),
+        orderBy("chapter_order", "asc"),
     );
     const originalSnap = await getDocs(originalQ);
-    const originals = originalSnap.docs.map((d) => ({
-        id: d.id,
-        ...(d.data() as Omit<Chapter, "id">),
-    }));
+    const originals = originalSnap.docs.map((d) =>
+        withId(d.id, d.data() as ChapterDocument),
+    );
 
     // 2. Fetch all chapters owned by the user
-    const userQ = query(chaptersRef, where("userId", "==", userId));
+    const userQ = query(chaptersRef, where("user_id", "==", userId));
     const userSnap = await getDocs(userQ);
-    const userCustoms = userSnap.docs.map((d) => ({
-        id: d.id,
-        ...(d.data() as Omit<Chapter, "id">),
-    }));
+    const userCustoms = userSnap.docs.map((d) =>
+        withId(d.id, d.data() as ChapterDocument),
+    );
 
-    // Map of parent ID or Chapter ID -> User Chapter Override
+    // Map of parent chapter ID -> user's override chapter
     const userOverridesMap = new Map<string, Chapter>();
     const brandNewChapters: Chapter[] = [];
 
     userCustoms.forEach((uc) => {
-        if (uc.parentChapterId) {
-            userOverridesMap.set(uc.parentChapterId, uc);
+        if (uc.parent_chapter_id) {
+            userOverridesMap.set(uc.parent_chapter_id, uc);
         } else {
             brandNewChapters.push(uc);
         }
@@ -318,12 +321,12 @@ export async function getUserTomeSequence(userId: string): Promise<Chapter[]> {
     const finalSequence: Chapter[] = [];
 
     for (const original of originals) {
-        if (userOverridesMap.has(original.id)) {
-            const override = userOverridesMap.get(original.id)!;
-            if (!override.isHidden) {
+        const override = userOverridesMap.get(original.id);
+        if (override) {
+            if (!override.is_hidden) {
                 finalSequence.push(override);
             }
-        } else if (!original.isHidden) {
+        } else if (!original.is_hidden) {
             finalSequence.push(original);
         }
     }
@@ -331,7 +334,7 @@ export async function getUserTomeSequence(userId: string): Promise<Chapter[]> {
     // Append new custom chapters and sort by order index
     const combined = [
         ...finalSequence,
-        ...brandNewChapters.filter((c) => !c.isHidden),
+        ...brandNewChapters.filter((c) => !c.is_hidden),
     ];
-    return combined.sort((a, b) => a.chapterOrder - b.chapterOrder);
+    return combined.sort((a, b) => a.chapter_order - b.chapter_order);
 }
