@@ -105,7 +105,7 @@ export default function AuthPage() {
                         The Living Tome
                     </p>
 
-                    <h1 className="mb-4 text-5xl font-semibold text-page-top">
+                    <h1 className="mb-4 text-5xl font-semibold text-page-top tracking-[1px]">
                         Scriptorium Access
                     </h1>
 
@@ -143,7 +143,7 @@ export default function AuthPage() {
 
                             <button
                                 type="submit"
-                                className="btn-parchment w-full"
+                                className="btn-parchment"
                                 disabled={loading}
                             >
                                 {loading ? "Registering..." : "Register"}
@@ -175,13 +175,24 @@ export default function AuthPage() {
                                 required
                             />
 
-                            <button
-                                type="submit"
-                                className="btn-parchment w-full"
-                                disabled={loading}
-                            >
-                                {loading ? "Signing in..." : "Sign In"}
-                            </button>
+                            {/* Flex container to push Sign In to the left and Forgot Password to the far right */}
+                            <div className="flex items-center justify-between gap-4">
+                                <button
+                                    type="submit"
+                                    className="btn-parchment"
+                                    disabled={loading}
+                                >
+                                    {loading ? "Signing in..." : "Sign In"}
+                                </button>
+
+                                <button
+                                    type="button"
+                                    onClick={handleForgotPassword}
+                                    className="text-sm font-medium  text-[0.9rem] text-[#6b5640] transition hover:text-[var(--ember)]"
+                                >
+                                    Forgot Password?
+                                </button>
+                            </div>
                         </form>
 
                         <div className="my-6 flex items-center">
@@ -197,7 +208,7 @@ export default function AuthPage() {
                             type="button"
                             onClick={handleGoogleSignIn}
                             disabled={loading}
-                            className="inline-flex w-full items-center justify-center gap-3 rounded-md border border-[#dadce0] bg-white px-4 py-3 text-sm font-medium text-[#3c4043] transition-colors hover:bg-[#f8f9fa] focus:outline-none focus:ring-2 focus:ring-[#4285f4]/50 active:bg-[#f1f3f4] disabled:opacity-50"
+                            className="inline-flex w-full items-center justify-center gap-3 rounded-md border border-[#dadce0] bg-white px-4 py-3 text-sm font-medium text-[#3c4043] transition-colors hover:bg-[#f8f9fa] focus:outline-none focus:ring-2 focus:ring-[#4285f4]/50 active:bg-[#f1f3f4] disabled:opacity-50 sans-serif-quicksand"
                         >
                             <svg
                                 className="h-4 w-4 shrink-0"
@@ -221,14 +232,6 @@ export default function AuthPage() {
                                 />
                             </svg>
                             <span>Continue with Google</span>
-                        </button>
-
-                        <button
-                            type="button"
-                            onClick={handleForgotPassword}
-                            className="mt-5 w-full text-center text-sm text-[#6b5640] transition hover:text-[var(--ember)]"
-                        >
-                            Forgot Password?
                         </button>
                     </Card>
                 </div>
