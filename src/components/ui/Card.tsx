@@ -21,13 +21,13 @@ export default function Card({
             {(title || subtitle) && (
                 <header className="mb-8">
                     {title && (
-                        <h2 className="mb-2 text-3xl font-semibold text-[var(--ink)]">
+                        <h2 className="mb-2 text-4xl text-[var(--ink)]">
                             {title}
                         </h2>
                     )}
 
                     {subtitle && (
-                        <p className="text-sm text-[#68533d]">{subtitle}</p>
+                        <p className="text-medium text-[#68533d]">{subtitle}</p>
                     )}
                 </header>
             )}
