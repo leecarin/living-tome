@@ -2,6 +2,7 @@ import Head from "next/head";
 import { useLayoutEffect, useMemo, useRef, useState, ReactNode } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import SkipAnimationButton from "@/components/ui/SkipAnimationButton";
+import { formatTomeLayout } from "@/lib/tomeLayoutFormatting";
 
 interface TomeLayoutProps {
     title: string;
@@ -62,26 +63,20 @@ export default function TomeLayout({
     const [leftFitCount, setLeftFitCount] = useState<number | null>(null);
     const [rightFitCount, setRightFitCount] = useState<number | null>(null);
 
-    const allParagraphs = useMemo(
-        () => (passage ? passage.split(/\n\n/) : []),
-        [passage],
-    );
-
-    const paragraphOffsets = useMemo(() => {
-        const offsets: { start: number; end: number }[] = [];
-        let cursor = 0;
-        for (const para of allParagraphs) {
-            const start = cursor;
-            const end = start + para.length;
-            offsets.push({ start, end });
-            cursor = end + 2; // length of the "\n\n" separator
-        }
-        return offsets;
-    }, [allParagraphs]);
-
-    const remainingAfterLeft = useMemo(
-        () => (leftFitCount === null ? [] : allParagraphs.slice(leftFitCount)),
-        [allParagraphs, leftFitCount],
+    const {
+        allParagraphs,
+        remainingAfterLeft,
+        leftDisplayedParagraphs,
+        rightDisplayedParagraphs,
+    } = useMemo(
+        () =>
+            formatTomeLayout({
+                passage,
+                revealedCount,
+                leftFitCount,
+                rightFitCount,
+            }),
+        [passage, revealedCount, leftFitCount, rightFitCount],
     );
 
     useLayoutEffect(() => {
@@ -120,82 +115,6 @@ export default function TomeLayout({
         observer.observe(pageEl);
         return () => observer.disconnect();
     }, [remainingAfterLeft]);
-
-    const { leftDisplayedParagraphs, rightDisplayedParagraphs } =
-        useMemo(() => {
-            if (!passage || allParagraphs.length === 0) {
-                return {
-                    leftDisplayedParagraphs: [],
-                    rightDisplayedParagraphs: [],
-                };
-            }
-
-            const hasMeasurements =
-                leftFitCount !== null && rightFitCount !== null;
-
-            const isOverflowing =
-                hasMeasurements &&
-                leftFitCount! + rightFitCount! < allParagraphs.length;
-
-            let leftParagraphCount: number;
-            let rightParagraphCount: number;
-
-            if (!hasMeasurements || isOverflowing) {
-                leftParagraphCount = Math.ceil(allParagraphs.length / 2);
-                rightParagraphCount = allParagraphs.length - leftParagraphCount;
-            } else {
-                leftParagraphCount = leftFitCount!;
-                rightParagraphCount = rightFitCount!;
-            }
-
-            const leftCharLimit =
-                leftParagraphCount > 0 &&
-                paragraphOffsets[leftParagraphCount - 1]
-                    ? paragraphOffsets[leftParagraphCount - 1].end
-                    : 0;
-
-            const rightStart =
-                leftParagraphCount < paragraphOffsets.length
-                    ? paragraphOffsets[leftParagraphCount].start
-                    : leftCharLimit;
-
-            const totalCount = leftParagraphCount + rightParagraphCount;
-            const targetIndex =
-                Math.min(totalCount, paragraphOffsets.length) - 1;
-
-            const rightEnd =
-                totalCount > 0 &&
-                targetIndex >= 0 &&
-                paragraphOffsets[targetIndex]
-                    ? paragraphOffsets[targetIndex].end
-                    : rightStart;
-
-            const effectiveCount = revealedCount ?? passage.length;
-            const revealedText = passage.slice(0, effectiveCount);
-
-            const leftRevealed = revealedText.slice(0, leftCharLimit);
-            const isLeftPageFilled = leftRevealed.length >= leftCharLimit;
-
-            const rightRevealed = isLeftPageFilled
-                ? revealedText.slice(rightStart, rightEnd)
-                : "";
-
-            return {
-                leftDisplayedParagraphs: leftRevealed
-                    ? leftRevealed.split(/\n\n/)
-                    : [],
-                rightDisplayedParagraphs: rightRevealed
-                    ? rightRevealed.split(/\n\n/)
-                    : [],
-            };
-        }, [
-            passage,
-            revealedCount,
-            allParagraphs,
-            paragraphOffsets,
-            leftFitCount,
-            rightFitCount,
-        ]);
 
     const renderedLeftPage = leftPage ?? (
         <div className="space-y-5">
