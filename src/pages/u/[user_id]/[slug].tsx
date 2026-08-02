@@ -22,20 +22,18 @@ import { authAtom } from "@/store/auth";
 interface Props {
     userId: string;
     slug: string;
-    fallbackChapter: SerializedChapter;
+    fallbackChapter: SerializedChapter | null;
 }
 
 type ChapterKey = readonly ["custom-chapter", string, string, User | null];
 
 async function fetchChapter([, userId, slug, currentUser]: ChapterKey) {
-    const chapter = await getUserChapterByTitleOrSlug(userId, slug);
-    if (!chapter) return null;
+    const isAuthor = currentUser?.uid === userId;
 
-    // Gate hidden pages: Allow access ONLY if the viewer is the author
-    if (chapter.is_hidden) {
-        const isAuthor = currentUser?.uid === userId;
-        if (!isAuthor) return null;
-    }
+    // Pass `isAuthor` so logged-in owners can query their hidden pages
+    const chapter = await getUserChapterByTitleOrSlug(userId, slug, isAuthor);
+    console.log("Chapter Found: ", JSON.stringify(chapter));
+    if (!chapter) return null;
 
     return serializeChapter(chapter);
 }
@@ -48,13 +46,11 @@ export default function CustomChapterPage({
     const [authState, setAuthState] = useAtom(authAtom);
 
     useEffect(() => {
-        // Immediate sync check with getCurrentUser()
         const cachedUser = getCurrentUser();
         if (cachedUser) {
             setAuthState((prev) => ({ ...prev, user: cachedUser }));
         }
 
-        // Subscribe to authoritative Firebase Auth state updates
         const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
             setAuthState({
                 user: firebaseUser,
@@ -65,24 +61,32 @@ export default function CustomChapterPage({
         return () => unsubscribe();
     }, [setAuthState]);
 
-    // Include authState.user in the SWR key so it revalidates when auth initializes
-    const { data: chapter } = useSWR<
+    // Compute whether the current client is the author
+    const isAuthor = authState.user?.uid === userId;
+
+    const { data: chapter, isLoading } = useSWR<
         SerializedChapter | null,
         Error,
         ChapterKey
     >(["custom-chapter", userId, slug, authState.user], fetchChapter, {
         fallbackData: fallbackChapter,
+        revalidateOnFocus: true,
     });
 
     const { revealedCount, cycle, handleRefreshInk } = useTomeTiming(
         chapter?.passage ?? "",
     );
 
-    // Initial SSR guard for hidden pages while client auth is loading/unauthenticated
-    const isAuthor = authState.user?.uid === userId;
-    const isHiddenFromViewer = chapter?.is_hidden && !isAuthor;
+    // Show loading state while Auth / SWR resolves for potential owners
+    if (authState.loading || (isLoading && !chapter)) {
+        return (
+            <main className="flex min-h-screen items-center justify-center bg-background px-6 text-foreground-soft">
+                <p>Unrolling leaf...</p>
+            </main>
+        );
+    }
 
-    if (!chapter || isHiddenFromViewer) {
+    if (!chapter) {
         return (
             <main className="flex min-h-screen items-center justify-center bg-background px-6 text-foreground-soft">
                 <p>This leaf is no longer available.</p>
@@ -114,18 +118,24 @@ export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
     const userId = ctx.params?.user_id as string;
     const slug = ctx.params?.slug as string;
 
-    const chapter = await getUserChapterByTitleOrSlug(userId, slug);
+    let fallbackChapter: SerializedChapter | null = null;
 
-    // Return 404 only if the document does not exist in Firestore at all
-    if (!chapter) {
-        return { notFound: true };
+    try {
+        // Try fetching as public first
+        const chapter = await getUserChapterByTitleOrSlug(userId, slug, false);
+        if (chapter) {
+            fallbackChapter = serializeChapter(chapter);
+        }
+    } catch (err) {
+        // Permission denied on SSR means it's likely a hidden page;
+        // suppress error so client SWR can attempt auth-backed fetch.
     }
 
     return {
         props: {
             userId,
             slug,
-            fallbackChapter: serializeChapter(chapter),
+            fallbackChapter,
         },
     };
 };
