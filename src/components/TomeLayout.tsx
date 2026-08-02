@@ -90,7 +90,7 @@ export default function TomeLayout({
     return (
         <>
             <Head>
-                <title>{title} | The Living Tome</title>
+                <title>{`${title} | Interactive Tome of Strahd`}</title>
                 <meta name="description" content={description} />
             </Head>
 
