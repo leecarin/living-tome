@@ -108,7 +108,7 @@ export default function LeafModal({
 
                     <div>
                         <label className="mb-1 block text-xs uppercase tracking-widest text-foreground-soft">
-                            Leaf Content (Markdown/HTML)
+                            Leaf Content (Plain Text/Markdown)
                         </label>
                         <textarea
                             rows={6}

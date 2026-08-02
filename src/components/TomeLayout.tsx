@@ -3,6 +3,7 @@ import { useLayoutEffect, useMemo, useRef, useState, ReactNode } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import SkipAnimationButton from "@/components/ui/SkipAnimationButton";
 import { formatTomeLayout } from "@/lib/tomeLayoutFormatting";
+import MarkdownBlock from "@/components/ui/MarkdownBlock";
 
 interface TomeLayoutProps {
     title: string;
@@ -21,7 +22,7 @@ function countFittingParagraphs(
     budget: number,
 ): number {
     const paragraphEls = Array.from(
-        measureEl.querySelectorAll("p"),
+        measureEl.querySelectorAll("[data-tome-block]"),
     ) as HTMLElement[];
     let fitCount = paragraphEls.length;
     for (let i = 0; i < paragraphEls.length; i++) {
@@ -124,7 +125,7 @@ export default function TomeLayout({
             </div>
             <div className="chapter-body">
                 {leftDisplayedParagraphs.map((para, idx) => (
-                    <p key={idx}>{para}</p>
+                    <MarkdownBlock key={idx} content={para} />
                 ))}
             </div>
         </div>
@@ -138,7 +139,7 @@ export default function TomeLayout({
             </div>
             <motion.div key={cycle} className="chapter-body">
                 {rightDisplayedParagraphs.map((para, idx) => (
-                    <p key={idx}>{para}</p>
+                    <MarkdownBlock key={idx} content={para} />
                 ))}
             </motion.div>
         </div>
@@ -219,7 +220,10 @@ export default function TomeLayout({
                                 >
                                     <div className="chapter-body">
                                         {allParagraphs.map((para, idx) => (
-                                            <p key={idx}>{para}</p>
+                                            <MarkdownBlock
+                                                key={idx}
+                                                content={para}
+                                            />
                                         ))}
                                     </div>
                                 </div>
@@ -241,7 +245,10 @@ export default function TomeLayout({
                                 >
                                     <div className="chapter-body">
                                         {remainingAfterLeft.map((para, idx) => (
-                                            <p key={idx}>{para}</p>
+                                            <MarkdownBlock
+                                                key={idx}
+                                                content={para}
+                                            />
                                         ))}
                                     </div>
                                 </div>
