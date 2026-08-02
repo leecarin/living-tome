@@ -13,6 +13,7 @@
     },
     "dependencies": {
         "firebase": "^12.16.0",
+        "firebase-admin": "^14.2.0",
         "jotai": "^2.20.2",
         "motion": "^12.42.2",
         "next": "16.2.12",
