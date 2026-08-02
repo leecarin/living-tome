@@ -79,15 +79,11 @@ export default function TomeLayout({
         return offsets;
     }, [allParagraphs]);
 
-    // Remaining paragraphs after the left page's fit-based share — used
-    // only to measure the right page's capacity, not necessarily to
-    // decide the final split (see `isOverflowing` below).
     const remainingAfterLeft = useMemo(
         () => (leftFitCount === null ? [] : allParagraphs.slice(leftFitCount)),
         [allParagraphs, leftFitCount],
     );
 
-    // Step 1: how many whole paragraphs fit on the left page.
     useLayoutEffect(() => {
         const pageEl = leftPageRef.current;
         const measureEl = leftMeasureRef.current;
@@ -105,9 +101,6 @@ export default function TomeLayout({
         return () => observer.disconnect();
     }, [allParagraphs]);
 
-    // Step 2: of what's left over after the left page, how many whole
-    // paragraphs fit on the right page. This is purely a measurement used
-    // to detect overflow — it doesn't necessarily become the final split.
     useLayoutEffect(() => {
         const pageEl = rightPageRef.current;
         const measureEl = rightMeasureRef.current;
@@ -130,7 +123,7 @@ export default function TomeLayout({
 
     const { leftDisplayedParagraphs, rightDisplayedParagraphs } =
         useMemo(() => {
-            if (!passage) {
+            if (!passage || allParagraphs.length === 0) {
                 return {
                     leftDisplayedParagraphs: [],
                     rightDisplayedParagraphs: [],
@@ -140,12 +133,6 @@ export default function TomeLayout({
             const hasMeasurements =
                 leftFitCount !== null && rightFitCount !== null;
 
-            // Would the fit-based split (fill left fully, then right) leave
-            // any paragraphs unable to fit on either page? If so, this is a
-            // "longer passage" — fall back to the original even split so
-            // content isn't lost, matching pre-fit-logic behavior. If not,
-            // it's a "shorter passage" — use the fit-based split so the left
-            // page fills completely before the right page starts.
             const isOverflowing =
                 hasMeasurements &&
                 leftFitCount! + rightFitCount! < allParagraphs.length;
@@ -153,36 +140,34 @@ export default function TomeLayout({
             let leftParagraphCount: number;
             let rightParagraphCount: number;
 
-            if (!hasMeasurements) {
-                // First paint, before measurement runs: same fallback the
-                // original solution always used.
-                leftParagraphCount = Math.ceil(allParagraphs.length / 2);
-                rightParagraphCount = allParagraphs.length - leftParagraphCount;
-            } else if (isOverflowing) {
-                // Long passage: even split across both pages, as before.
+            if (!hasMeasurements || isOverflowing) {
                 leftParagraphCount = Math.ceil(allParagraphs.length / 2);
                 rightParagraphCount = allParagraphs.length - leftParagraphCount;
             } else {
-                // Short passage: fill left to capacity first.
                 leftParagraphCount = leftFitCount!;
                 rightParagraphCount = rightFitCount!;
             }
 
             const leftCharLimit =
-                leftParagraphCount > 0
+                leftParagraphCount > 0 &&
+                paragraphOffsets[leftParagraphCount - 1]
                     ? paragraphOffsets[leftParagraphCount - 1].end
                     : 0;
 
             const rightStart =
-                leftParagraphCount < allParagraphs.length
+                leftParagraphCount < paragraphOffsets.length
                     ? paragraphOffsets[leftParagraphCount].start
                     : leftCharLimit;
 
+            const totalCount = leftParagraphCount + rightParagraphCount;
+            const targetIndex =
+                Math.min(totalCount, paragraphOffsets.length) - 1;
+
             const rightEnd =
-                leftParagraphCount + rightParagraphCount > 0
-                    ? paragraphOffsets[
-                          leftParagraphCount + rightParagraphCount - 1
-                      ].end
+                totalCount > 0 &&
+                targetIndex >= 0 &&
+                paragraphOffsets[targetIndex]
+                    ? paragraphOffsets[targetIndex].end
                     : rightStart;
 
             const effectiveCount = revealedCount ?? passage.length;
@@ -207,6 +192,7 @@ export default function TomeLayout({
             passage,
             revealedCount,
             allParagraphs,
+            paragraphOffsets,
             leftFitCount,
             rightFitCount,
         ]);
@@ -253,7 +239,6 @@ export default function TomeLayout({
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
                 >
-                    {/* Header Bar */}
                     <div className="mb-5 flex items-center justify-between gap-4 px-1 text-[0.68rem] uppercase tracking-[0.48em] text-foreground-soft">
                         <span>{headerLabel}</span>
 
@@ -282,7 +267,6 @@ export default function TomeLayout({
                         </div>
                     </div>
 
-                    {/* Dark Gray Outer Tome Cover */}
                     <motion.section
                         className="relative overflow-hidden rounded-[2.4rem] border border-slate-700/80 bg-slate-900 p-3 shadow-[0_48px_140px_rgba(0,0,0,0.7)] ring-1 ring-black/50 sm:p-4"
                         whileHover={
@@ -296,13 +280,10 @@ export default function TomeLayout({
                             damping: 22,
                         }}
                     >
-                        {/* Book Spine Center Line */}
                         <div className="pointer-events-none absolute inset-y-0 left-1/2 w-12 -translate-x-1/2 bg-slate-950/80 shadow-[0_0_28px_rgba(0,0,0,0.5)]" />
                         <div className="pointer-events-none absolute inset-y-3 left-1/2 w-[1px] -translate-x-1/2 bg-slate-700/40" />
 
-                        {/* Warm Yellow Pages Grid */}
                         <div className="grid gap-0 overflow-hidden rounded-[1.8rem] border border-[#d8caae]/60 bg-page-base shadow-[inset_0_1px_0_rgba(255,255,255,0.4)] lg:grid-cols-2">
-                            {/* Left Page Surface */}
                             <div
                                 ref={leftPageRef}
                                 className="relative min-h-[31rem] overflow-hidden bg-[linear-gradient(180deg,var(--page-top),var(--page-bottom-left))] px-5 py-6 text-ink shadow-[inset_-14px_0_28px_rgba(72,52,32,0.08),inset_0_1px_0_rgba(255,255,255,0.8)] sm:px-8 sm:py-8"
@@ -325,7 +306,6 @@ export default function TomeLayout({
                                 </div>
                             </div>
 
-                            {/* Right Page Surface */}
                             <div
                                 ref={rightPageRef}
                                 className="relative min-h-[31rem] overflow-hidden bg-[linear-gradient(180deg,var(--page-top),var(--page-bottom-right))] px-5 py-6 text-ink shadow-[inset_14px_0_28px_rgba(72,52,32,0.07),inset_0_1px_0_rgba(255,255,255,0.8)] sm:px-8 sm:py-8"

@@ -225,10 +225,10 @@ export default function Home() {
                                         <div className="mb-6 flex items-start justify-between gap-4">
                                             <div>
                                                 <p className="text-[0.68rem] uppercase tracking-[0.42em] text-[#8c7457]">
-                                                    Chapter I
+                                                    Home Page
                                                 </p>
                                                 <h2
-                                                    className={`${headingFont.className} mt-2 text-4xl font-semibold tracking-tight text-ink sm:text-5xl`}
+                                                    className={`${headingFont.className} mt-2 text-4xl leading-tight font-semibold tracking-tight text-ink sm:text-5xl`}
                                                 >
                                                     The page remembers.
                                                 </h2>

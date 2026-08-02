@@ -286,7 +286,8 @@ export default function AdminDashboard() {
                                                 {leaf.parent_chapter_id
                                                     ? "Edited leaf"
                                                     : "New leaf"}{" "}
-                                                • /{leaf.slug}
+                                                •
+                                                {` Chapter ${leaf.chapter_order}`}
                                             </span>
                                         </div>
 

@@ -2,10 +2,21 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState, type ReactNode } from "react";
 import { useAtomValue } from "jotai";
+import useSWR from "swr";
+
 import { authAtom } from "@/store/auth";
 import { logoutUser } from "@/lib/firebase/auth";
+import {
+    getOriginalChapters,
+    getUserChapters,
+} from "@/lib/firebase/db/firestore";
+import {
+    serializeChapter,
+    type SerializedChapter,
+} from "@/lib/firebase/db/serialize";
 
-const chapters = [
+// Static fallback / primary routes that should always exist
+const staticOriginalChapters = [
     { href: "/", label: "Home Page", code: "I", category: "Front leaf" },
     {
         href: "/last-dusk",
@@ -21,12 +32,39 @@ const chapters = [
     },
 ];
 
+async function fetchOriginalChapters() {
+    const docs = await getOriginalChapters();
+    return docs.filter((doc) => !doc.is_hidden).map(serializeChapter);
+}
+
+async function fetchUserChapters([, uid]: [string, string]) {
+    if (!uid) return [];
+    const docs = await getUserChapters(uid);
+    return docs.filter((doc) => !doc.is_hidden).map(serializeChapter);
+}
+
 export default function ChapterShell({ children }: { children: ReactNode }) {
     const router = useRouter();
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [isMobileOpen, setIsMobileOpen] = useState(false);
 
+    // Dropdown toggle states
+    const [isOriginalOpen, setIsOriginalOpen] = useState(true);
+    const [isCustomOpen, setIsCustomOpen] = useState(true);
+
     const { user } = useAtomValue(authAtom);
+
+    // Fetch original read-only chapters
+    const { data: originalChapters = [] } = useSWR<SerializedChapter[]>(
+        "original-chapters-list",
+        fetchOriginalChapters,
+    );
+
+    // Fetch logged-in user's custom chapters
+    const { data: customChapters = [] } = useSWR<SerializedChapter[]>(
+        user ? ["user-chapters-list", user.uid] : null,
+        fetchUserChapters,
+    );
 
     const handleLogout = async () => {
         try {
@@ -37,6 +75,76 @@ export default function ChapterShell({ children }: { children: ReactNode }) {
         }
     };
 
+    // Combine static original routes with dynamic ones from Firestore slug routing
+    const allOriginals = [
+        ...staticOriginalChapters,
+        ...originalChapters
+            .filter((ch) => ch.slug !== "last-dusk" && ch.slug !== "epilogue")
+            .map((ch, idx) => ({
+                href: `/${ch.slug}`,
+                label: ch.title,
+                code: `O-${idx + 1}`,
+                category: `Chapter ${ch.chapter_order}`,
+            })),
+    ];
+
+    const allCustoms = customChapters.map((ch, idx) => ({
+        href: `/u/${user?.uid}/${ch.slug}`,
+        label: ch.title,
+        code: `C-${idx + 1}`,
+        category: `Chapter ${ch.chapter_order}`,
+    }));
+
+    const renderChapterLink = (item: {
+        href: string;
+        label: string;
+        code: string;
+        category: string;
+    }) => {
+        const isActive = router.asPath === item.href;
+
+        return (
+            <Link
+                key={item.href}
+                href={item.href}
+                onClick={() => setIsMobileOpen(false)}
+                title={isCollapsed ? item.label : undefined}
+                className={`group relative flex items-center gap-3 rounded-2xl border transition-all duration-200 ${
+                    isCollapsed
+                        ? "justify-center px-2 py-3.5"
+                        : "px-4 py-3.5 text-left"
+                } ${
+                    isActive
+                        ? "border-mist/70 bg-mist/20 text-foreground shadow-chapter-active"
+                        : "border-foreground/10 bg-white/[0.04] text-foreground-soft hover:border-mist/40 hover:bg-mist/10 hover:text-foreground"
+                }`}
+            >
+                {isActive && (
+                    <span className="shadow-bookmark-glow absolute inset-y-2.5 left-0 w-1 rounded-r-full bg-blood" />
+                )}
+
+                {isCollapsed ? (
+                    <span className="font-serif text-lg">{item.code}</span>
+                ) : (
+                    <div className="min-w-0 flex-1">
+                        <span
+                            className={`block text-[0.68rem] font-medium uppercase tracking-[0.38em] transition-colors ${
+                                isActive
+                                    ? "text-moonlight"
+                                    : "text-mist group-hover:text-moonlight"
+                            }`}
+                        >
+                            {item.category}
+                        </span>
+                        <span className="mt-0.5 block truncate text-base font-medium leading-6">
+                            {item.label}
+                        </span>
+                    </div>
+                )}
+            </Link>
+        );
+    };
+
     return (
         <div className="min-h-screen lg:flex">
             {/* Mobile Header Bar */}
@@ -44,7 +152,7 @@ export default function ChapterShell({ children }: { children: ReactNode }) {
                 <div className="flex items-center gap-2">
                     <span className="h-2 w-2 rounded-full bg-blood shadow-dot-glow" />
                     <span className="font-serif font-semibold tracking-wide">
-                        The Living Tome
+                        <Link href="/">The Living Tome</Link>
                     </span>
                 </div>
                 <button
@@ -122,9 +230,11 @@ export default function ChapterShell({ children }: { children: ReactNode }) {
 
                         {!isCollapsed && (
                             <div className="mt-2 space-y-1">
-                                <h1 className="whitespace-nowrap font-serif text-2xl leading-tight text-foreground">
-                                    The Living Tome
-                                </h1>
+                                <Link href={"/"}>
+                                    <h1 className="whitespace-nowrap font-serif text-2xl leading-tight text-foreground">
+                                        The Living Tome
+                                    </h1>
+                                </Link>
                                 <p className="max-w-[15rem] text-sm leading-6 text-foreground-soft">
                                     Turn the leaves to step between chapters.
                                 </p>
@@ -132,61 +242,90 @@ export default function ChapterShell({ children }: { children: ReactNode }) {
                         )}
                     </div>
 
-                    {/* Navigation */}
+                    {/* Navigation Container */}
                     <nav
                         aria-label="Chapter navigation"
-                        className="flex flex-col gap-2.5"
+                        className="flex flex-1 flex-col gap-4 overflow-y-auto pr-1"
                     >
-                        {chapters.map((chapter) => {
-                            const isActive = router.pathname === chapter.href;
-
-                            return (
-                                <Link
-                                    key={chapter.href}
-                                    href={chapter.href}
-                                    onClick={() => setIsMobileOpen(false)}
-                                    title={
-                                        isCollapsed ? chapter.label : undefined
+                        {/* 1. Original / Read-Only Dropdown */}
+                        <div className="flex flex-col gap-2">
+                            {!isCollapsed ? (
+                                <button
+                                    type="button"
+                                    onClick={() =>
+                                        setIsOriginalOpen((prev) => !prev)
                                     }
-                                    className={`group relative flex items-center gap-3 rounded-2xl border transition-all duration-200 ${
-                                        isCollapsed
-                                            ? "justify-center px-2 py-3.5"
-                                            : "px-4 py-3.5 text-left"
-                                    } ${
-                                        isActive
-                                            ? "border-mist/70 bg-mist/20 text-foreground shadow-chapter-active"
-                                            : "border-foreground/10 bg-white/[0.04] text-foreground-soft hover:border-mist/40 hover:bg-mist/10 hover:text-foreground"
-                                    }`}
+                                    className="flex items-center justify-between px-1 text-[0.85rem] font-semibold uppercase tracking-[0.25em] text-mist hover:text-moonlight"
                                 >
-                                    {/* Active Left Bookmark Strip */}
-                                    {isActive && (
-                                        <span className="shadow-bookmark-glow absolute inset-y-2.5 left-0 w-1 rounded-r-full bg-blood" />
-                                    )}
+                                    <span>Tome of Strahd</span>
+                                    <svg
+                                        className={`h-3.5 w-3.5 transform transition-transform ${
+                                            isOriginalOpen ? "rotate-180" : ""
+                                        }`}
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor"
+                                        strokeWidth={2}
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            d="M19 9l-7 7-7-7"
+                                        />
+                                    </svg>
+                                </button>
+                            ) : null}
 
-                                    {/* Icon Indicator when collapsed */}
-                                    {isCollapsed ? (
-                                        <span className="text-lg font-serif">
-                                            {chapter.code}
-                                        </span>
-                                    ) : (
-                                        <div className="min-w-0 flex-1">
-                                            <span
-                                                className={`block text-[0.68rem] font-medium uppercase tracking-[0.38em] transition-colors ${
-                                                    isActive
-                                                        ? "text-moonlight"
-                                                        : "text-mist group-hover:text-moonlight"
-                                                }`}
-                                            >
-                                                {chapter.category}
-                                            </span>
-                                            <span className="mt-0.5 block truncate text-base font-medium leading-6">
-                                                {chapter.label}
-                                            </span>
-                                        </div>
-                                    )}
-                                </Link>
-                            );
-                        })}
+                            {(isOriginalOpen || isCollapsed) && (
+                                <div className="flex flex-col gap-2">
+                                    {allOriginals.map(renderChapterLink)}
+                                </div>
+                            )}
+                        </div>
+
+                        {/* 2. Custom User Content Dropdown (Logged in only) */}
+                        {user && (
+                            <div className="flex flex-col gap-2 pt-2 border-t border-blood/10">
+                                {!isCollapsed ? (
+                                    <button
+                                        type="button"
+                                        onClick={() =>
+                                            setIsCustomOpen((prev) => !prev)
+                                        }
+                                        className="flex items-center justify-between px-1 text-[0.7rem] font-semibold uppercase tracking-[0.25em] text-mist hover:text-moonlight"
+                                    >
+                                        <span>Custom Chapters</span>
+                                        <svg
+                                            className={`h-3.5 w-3.5 transform transition-transform ${
+                                                isCustomOpen ? "rotate-180" : ""
+                                            }`}
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke="currentColor"
+                                            strokeWidth={2}
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                d="M19 9l-7 7-7-7"
+                                            />
+                                        </svg>
+                                    </button>
+                                ) : null}
+
+                                {(isCustomOpen || isCollapsed) && (
+                                    <div className="flex flex-col gap-2">
+                                        {allCustoms.length > 0 ? (
+                                            allCustoms.map(renderChapterLink)
+                                        ) : !isCollapsed ? (
+                                            <p className="px-2 text-xs italic text-foreground-soft/60">
+                                                No custom leaves recorded.
+                                            </p>
+                                        ) : null}
+                                    </div>
+                                )}
+                            </div>
+                        )}
                     </nav>
 
                     {/* Collapsed View User Actions */}
