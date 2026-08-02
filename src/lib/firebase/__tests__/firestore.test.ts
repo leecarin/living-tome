@@ -26,8 +26,17 @@ jest.mock("firebase/firestore", () => ({
     updateDoc: jest.fn(),
     deleteDoc: jest.fn(),
     query: jest.fn((ref, ...clauses) => ({ __type: "query", ref, clauses })),
-    where: jest.fn((field, op, value) => ({ __type: "where", field, op, value })),
-    orderBy: jest.fn((field, direction) => ({ __type: "orderBy", field, direction })),
+    where: jest.fn((field, op, value) => ({
+        __type: "where",
+        field,
+        op,
+        value,
+    })),
+    orderBy: jest.fn((field, direction) => ({
+        __type: "orderBy",
+        field,
+        direction,
+    })),
     serverTimestamp: jest.fn(() => "__SERVER_TIMESTAMP__"),
 }));
 
@@ -47,7 +56,9 @@ const mockOrderBy = orderBy as jest.Mock;
 
 // --- Test helpers ------------------------------------------------------------
 
-function makeChapterDoc(overrides: Partial<ChapterDocument> = {}): ChapterDocument {
+function makeChapterDoc(
+    overrides: Partial<ChapterDocument> = {},
+): ChapterDocument {
     return {
         title: "The Fall of Dusk Elves",
         slug: "the-fall-of-dusk-elves",
@@ -57,8 +68,10 @@ function makeChapterDoc(overrides: Partial<ChapterDocument> = {}): ChapterDocume
         parent_chapter_id: null,
         is_original: true,
         is_hidden: false,
-        created_at: "__SERVER_TIMESTAMP__" as unknown as ChapterDocument["created_at"],
-        updated_at: "__SERVER_TIMESTAMP__" as unknown as ChapterDocument["updated_at"],
+        created_at:
+            "__SERVER_TIMESTAMP__" as unknown as ChapterDocument["created_at"],
+        updated_at:
+            "__SERVER_TIMESTAMP__" as unknown as ChapterDocument["updated_at"],
         ...overrides,
     };
 }
@@ -71,7 +84,9 @@ function makeDocSnap(id: string, data: ChapterDocument | null) {
     };
 }
 
-function makeQuerySnapshot(entries: Array<{ id: string; data: ChapterDocument }>) {
+function makeQuerySnapshot(
+    entries: Array<{ id: string; data: ChapterDocument }>,
+) {
     return {
         empty: entries.length === 0,
         docs: entries.map((e) => ({ id: e.id, data: () => e.data })),
@@ -145,7 +160,8 @@ describe("getOriginalChapterBySlug", () => {
     it("returns null when no chapter matches the slug", async () => {
         mockGetDocs.mockResolvedValueOnce(makeQuerySnapshot([]));
 
-        const result = await firestoreDb.getOriginalChapterBySlug("nonexistent");
+        const result =
+            await firestoreDb.getOriginalChapterBySlug("nonexistent");
 
         expect(result).toBeNull();
     });
@@ -156,7 +172,8 @@ describe("getOriginalChapterBySlug", () => {
             makeQuerySnapshot([{ id: "chapter-2", data: chapterData }]),
         );
 
-        const result = await firestoreDb.getOriginalChapterBySlug("death-house");
+        const result =
+            await firestoreDb.getOriginalChapterBySlug("death-house");
 
         expect(mockWhere).toHaveBeenCalledWith("is_original", "==", true);
         expect(mockWhere).toHaveBeenCalledWith("slug", "==", "death-house");
@@ -169,7 +186,11 @@ describe("getOriginalChapterBySlug", () => {
 // =============================================================================
 
 describe("getUserChapterByTitleOrSlug", () => {
-    it("slugifies the input before querying and returns null on no match", async () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
+    it("slugifies input and queries with is_hidden == false by default (public lookup)", async () => {
         mockGetDocs.mockResolvedValueOnce(makeQuerySnapshot([]));
 
         const result = await firestoreDb.getUserChapterByTitleOrSlug(
@@ -183,13 +204,34 @@ describe("getUserChapterByTitleOrSlug", () => {
             "==",
             "my-custom-chapter",
         );
+        expect(mockWhere).toHaveBeenCalledWith("is_hidden", "==", false);
         expect(result).toBeNull();
     });
 
-    it("returns the matching user chapter", async () => {
+    it("omits the is_hidden filter when forOwner is true (owner preview lookup)", async () => {
+        mockGetDocs.mockResolvedValueOnce(makeQuerySnapshot([]));
+
+        const result = await firestoreDb.getUserChapterByTitleOrSlug(
+            "user-1",
+            "My Custom Chapter!",
+            true, // forOwner
+        );
+
+        expect(mockWhere).toHaveBeenCalledWith("user_id", "==", "user-1");
+        expect(mockWhere).toHaveBeenCalledWith(
+            "slug",
+            "==",
+            "my-custom-chapter",
+        );
+        expect(mockWhere).not.toHaveBeenCalledWith("is_hidden", "==", false);
+        expect(result).toBeNull();
+    });
+
+    it("returns the matching user chapter when a public match is found", async () => {
         const chapterData = makeChapterDoc({
             user_id: "user-1",
             is_original: false,
+            is_hidden: false,
             slug: "my-custom-chapter",
         });
         mockGetDocs.mockResolvedValueOnce(
@@ -202,6 +244,26 @@ describe("getUserChapterByTitleOrSlug", () => {
         );
 
         expect(result).toEqual({ id: "chapter-3", ...chapterData });
+    });
+
+    it("returns a hidden user chapter when queried as owner", async () => {
+        const hiddenChapterData = makeChapterDoc({
+            user_id: "user-1",
+            is_original: false,
+            is_hidden: true,
+            slug: "my-secret-chapter",
+        });
+        mockGetDocs.mockResolvedValueOnce(
+            makeQuerySnapshot([{ id: "chapter-4", data: hiddenChapterData }]),
+        );
+
+        const result = await firestoreDb.getUserChapterByTitleOrSlug(
+            "user-1",
+            "my-secret-chapter",
+            true, // forOwner
+        );
+
+        expect(result).toEqual({ id: "chapter-4", ...hiddenChapterData });
     });
 });
 
@@ -376,7 +438,10 @@ describe("removeUserChapter", () => {
     });
 
     it("throws Unauthorized when a non-owner attempts to delete a user chapter", async () => {
-        const owned = makeChapterDoc({ is_original: false, user_id: "owner-1" });
+        const owned = makeChapterDoc({
+            is_original: false,
+            user_id: "owner-1",
+        });
         mockGetDoc.mockResolvedValueOnce(makeDocSnap("chapter-8", owned));
 
         await expect(
@@ -444,7 +509,10 @@ describe("toggleChapterVisibility", () => {
     });
 
     it("does nothing when the caller does not own a non-original chapter", async () => {
-        const owned = makeChapterDoc({ is_original: false, user_id: "owner-1" });
+        const owned = makeChapterDoc({
+            is_original: false,
+            user_id: "owner-1",
+        });
         mockGetDoc.mockResolvedValueOnce(makeDocSnap("chapter-11", owned));
 
         await firestoreDb.toggleChapterVisibility(

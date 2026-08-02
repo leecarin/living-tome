@@ -90,22 +90,32 @@ export async function getOriginalChapterBySlug(
 // ============================================================================
 
 /**
- * Fetches a specific chapter passage for a given user ID by its title or slug.
+ * Fetches a chapter by userId and slug.
+ * If `forOwner` is false (or omitted, e.g. during SSR), it explicitly queries
+ * for `is_hidden == false` so Firestore rules permit the read.
  */
 export async function getUserChapterByTitleOrSlug(
     userId: string,
     titleOrSlug: string,
+    forOwner: boolean = false,
 ): Promise<Chapter | null> {
     const chaptersRef = collection(db, CHAPTERS_COLLECTION);
     const targetSlug = slugify(titleOrSlug);
 
-    const q = query(
-        chaptersRef,
+    const queryConstraints = [
         where("user_id", "==", userId),
         where("slug", "==", targetSlug),
-    );
+    ];
 
+    // If not specifically fetching as the owner, restrict the query to public pages
+    // so Firestore Security Rules pass!
+    if (!forOwner) {
+        queryConstraints.push(where("is_hidden", "==", false));
+    }
+
+    const q = query(chaptersRef, ...queryConstraints);
     const snapshot = await getDocs(q);
+
     if (snapshot.empty) return null;
 
     const docSnap = snapshot.docs[0];
