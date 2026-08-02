@@ -3,6 +3,7 @@ import { useAtomValue } from "jotai";
 import useSWR from "swr";
 import Link from "next/link";
 
+import LeafModal, { type LeafDraft } from "@/components/admin/LeafModal";
 import { authAtom } from "@/store/auth";
 import {
     createUserChapter,
@@ -13,14 +14,6 @@ import {
     toggleChapterVisibility,
 } from "@/lib/firebase/db/firestore";
 import type { Chapter } from "@/lib/firebase/db/schema";
-
-// Empty draft shape used to back the create/edit form
-interface LeafDraft {
-    title: string;
-    slug: string;
-    chapterOrder: string; // kept as string while editing, parsed to number on submit
-    passage: string;
-}
 
 const EMPTY_DRAFT: LeafDraft = {
     title: "",
@@ -91,7 +84,7 @@ export default function AdminDashboard() {
         setShowModal(true);
     }
 
-    async function handleSubmit(e: React.FormEvent) {
+    async function handleSubmit(e: React.SyntheticEvent<HTMLFormElement>) {
         e.preventDefault();
         if (!user) return;
 
@@ -368,122 +361,15 @@ export default function AdminDashboard() {
                 </div>
             </div>
 
-            {/* Modal Overlay for Creating / Editing a Page */}
-            {showModal && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
-                    <div className="w-full max-w-2xl rounded-2xl border border-mist/30 bg-slate-800 p-6 shadow-2xl">
-                        <div className="mb-6 flex items-center justify-between border-b border-mist/20 pb-4">
-                            <h2 className="font-serif text-2xl text-page-top">
-                                {editingLeaf
-                                    ? "Revise a Leaf"
-                                    : "Inscribe a New Leaf"}
-                            </h2>
-                            <button
-                                type="button"
-                                onClick={() => setShowModal(false)}
-                                className="text-foreground-soft hover:text-foreground"
-                            >
-                                ✕
-                            </button>
-                        </div>
-
-                        <form onSubmit={handleSubmit} className="space-y-4">
-                            <div>
-                                <label className="mb-1 block text-xs uppercase tracking-widest text-foreground-soft">
-                                    Page Title
-                                </label>
-                                <input
-                                    type="text"
-                                    value={draft.title}
-                                    onChange={(e) =>
-                                        setDraft((d) => ({
-                                            ...d,
-                                            title: e.target.value,
-                                        }))
-                                    }
-                                    placeholder="e.g., The Domain of Dread"
-                                    required
-                                    className="input-box"
-                                />
-                            </div>
-
-                            <div className="grid gap-4 sm:grid-cols-2">
-                                <div>
-                                    <label className="mb-1 block text-xs uppercase tracking-widest text-foreground-soft">
-                                        URL Slug
-                                    </label>
-                                    <input
-                                        type="text"
-                                        value={draft.slug}
-                                        onChange={(e) =>
-                                            setDraft((d) => ({
-                                                ...d,
-                                                slug: e.target.value,
-                                            }))
-                                        }
-                                        placeholder="domain-of-dread (auto-generated if left blank)"
-                                        className="input-box"
-                                    />
-                                </div>
-
-                                <div>
-                                    <label className="mb-1 block text-xs uppercase tracking-widest text-foreground-soft">
-                                        Chapter Order
-                                    </label>
-                                    <input
-                                        type="number"
-                                        value={draft.chapterOrder}
-                                        onChange={(e) =>
-                                            setDraft((d) => ({
-                                                ...d,
-                                                chapterOrder: e.target.value,
-                                            }))
-                                        }
-                                        required
-                                        className="input-box"
-                                    />
-                                </div>
-                            </div>
-
-                            <div>
-                                <label className="mb-1 block text-xs uppercase tracking-widest text-foreground-soft">
-                                    Leaf Content (Markdown/HTML)
-                                </label>
-                                <textarea
-                                    rows={6}
-                                    value={draft.passage}
-                                    onChange={(e) =>
-                                        setDraft((d) => ({
-                                            ...d,
-                                            passage: e.target.value,
-                                        }))
-                                    }
-                                    placeholder="Inscribe the chapter's secrets..."
-                                    required
-                                    className="input-box"
-                                />
-                            </div>
-
-                            <div className="flex justify-end gap-3 pt-4">
-                                <button
-                                    type="button"
-                                    onClick={() => setShowModal(false)}
-                                    className="rounded-xl border border-moonlight/50 px-4 py-2 text-sm text-foreground-soft hover:bg-mist/20 tracking-wider"
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    type="submit"
-                                    disabled={saving}
-                                    className="rounded-xl border border-blood/80 bg-blood/65 px-4 py-2 text-sm font-medium text-foreground hover:bg-blood/80 disabled:opacity-50 tracking-wider"
-                                >
-                                    {saving ? "Saving..." : "Save Leaf"}
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            )}
+            <LeafModal
+                isOpen={showModal}
+                editingLeaf={editingLeaf}
+                draft={draft}
+                setDraft={setDraft}
+                saving={saving}
+                onClose={() => setShowModal(false)}
+                onSubmit={handleSubmit}
+            />
         </main>
     );
 }
