@@ -13,10 +13,6 @@ import {
     toggleChapterVisibility,
 } from "@/lib/firebase/db/firestore";
 import type { Chapter } from "@/lib/firebase/db/schema";
-import { getCurrentUser } from "@/lib/firebase/auth";
-
-const user = getCurrentUser();
-const user_id = user?.uid;
 
 // Empty draft shape used to back the create/edit form
 interface LeafDraft {
@@ -53,8 +49,7 @@ export default function AdminDashboard() {
     const [pendingId, setPendingId] = useState<string | null>(null);
     const [actionError, setActionError] = useState<string | null>(null);
 
-    // Fetch (and revalidate) this user's authored leaves via SWR. The key is
-    // null while there's no user yet, which tells SWR not to fetch.
+    // Fetch (and revalidate) this user's authored leaves via SWR.
     const {
         data: leaves = [],
         error: fetchError,
@@ -186,7 +181,8 @@ export default function AdminDashboard() {
     }
 
     function handleCopyLink(leaf: Chapter) {
-        const fullUrl = `${window.location.origin}/u/${user_id}/${leaf.slug}`;
+        if (!user) return;
+        const fullUrl = `${window.location.origin}/u/${user.uid}/${leaf.slug}`;
         navigator.clipboard.writeText(fullUrl);
         setCopiedId(leaf.id);
         setTimeout(() => setCopiedId(null), 2000);
@@ -320,7 +316,7 @@ export default function AdminDashboard() {
 
                                             {/* View Public Page */}
                                             <Link
-                                                href={`/u/${user_id}/${leaf.slug}`}
+                                                href={`/u/${user.uid}/${leaf.slug}`}
                                                 target="_blank"
                                                 className="btn-action-compact"
                                             >

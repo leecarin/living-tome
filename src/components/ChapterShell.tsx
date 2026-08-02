@@ -18,18 +18,6 @@ import {
 // Static fallback / primary routes that should always exist
 const staticOriginalChapters = [
     { href: "/", label: "Home Page", code: "I", category: "Front leaf" },
-    {
-        href: "/last-dusk",
-        label: "The Fall of the Dusk Elves",
-        code: "II",
-        category: "Distant leaf",
-    },
-    {
-        href: "/epilogue",
-        label: "Epilogue",
-        code: "III",
-        category: "Distant leaf",
-    },
 ];
 
 async function fetchOriginalChapters() {
