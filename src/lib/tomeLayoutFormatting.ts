@@ -17,9 +17,7 @@ interface ParagraphOffset {
     end: number;
 }
 
-function splitParagraphs(passage?: string): string[] {
-    return passage ? passage.split(/\n\n/) : [];
-}
+import { splitPassageIntoBlocks } from "./tomeMarkdownFormatting";
 
 function buildParagraphOffsets(paragraphs: string[]): ParagraphOffset[] {
     const offsets: ParagraphOffset[] = [];
@@ -41,7 +39,7 @@ export function formatTomeLayout({
     leftFitCount,
     rightFitCount,
 }: TomeLayoutFormattingInput): TomeLayoutFormattingResult {
-    const allParagraphs = splitParagraphs(passage);
+    const allParagraphs = splitPassageIntoBlocks(passage);
 
     if (!passage || allParagraphs.length === 0) {
         return {
