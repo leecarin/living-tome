@@ -292,7 +292,7 @@ export default function ChapterShell({ children }: { children: ReactNode }) {
                                         onClick={() =>
                                             setIsCustomOpen((prev) => !prev)
                                         }
-                                        className="flex items-center justify-between px-1 text-[0.7rem] font-semibold uppercase tracking-[0.25em] text-mist hover:text-moonlight"
+                                        className="flex items-center justify-between px-1 text-[0.85rem] font-semibold uppercase tracking-[0.25em] text-mist hover:text-moonlight"
                                     >
                                         <span>Custom Chapters</span>
                                         <svg

@@ -121,20 +121,18 @@ export async function getUserChapterByTitleOrSlug(
  */
 export async function getUserChapters(userId: string): Promise<Chapter[]> {
     const chaptersRef = collection(db, CHAPTERS_COLLECTION);
-    const q = query(chaptersRef, where("user_id", "==", userId));
+    const q = query(
+        chaptersRef,
+        where("user_id", "==", userId),
+        orderBy("chapter_order", "asc"),
+    );
 
     const snapshot = await getDocs(q);
     const chapters = snapshot.docs.map((d) =>
         withId(d.id, d.data() as ChapterDocument),
     );
 
-    // Sorted client-side (rather than via an `orderBy` clause) to avoid
-    // requiring a composite Firestore index on (user_id, updated_at).
-    return chapters.sort((a, b) => {
-        const aMillis = (a.updated_at as Timestamp)?.toMillis?.() ?? 0;
-        const bMillis = (b.updated_at as Timestamp)?.toMillis?.() ?? 0;
-        return bMillis - aMillis;
-    });
+    return chapters;
 }
 
 /**
