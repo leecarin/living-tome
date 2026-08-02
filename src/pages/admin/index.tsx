@@ -214,10 +214,10 @@ export default function AdminDashboard() {
                 {/* Header */}
                 <div className="flex flex-col gap-4 border-b border-blood/20 pb-6 sm:flex-row sm:items-center sm:justify-between">
                     <div>
-                        <p className="text-xs font-medium uppercase tracking-[0.45em] text-blood-light/80">
+                        <p className="text-sm font-medium uppercase tracking-[0.38em] text-blood-light/80">
                             Keeper Scriptorium
                         </p>
-                        <h1 className="mt-1 font-serif text-3xl text-page-top tracking-widest">
+                        <h1 className="mt-1 font-serif text-4xl text-page-top tracking-[1px]">
                             Manage Chapters
                         </h1>
                     </div>
@@ -252,7 +252,7 @@ export default function AdminDashboard() {
 
                 {/* Leaves Management Table / Cards */}
                 <div className="rounded-2xl border border-moonlight/20 bg-mist/8 p-6 backdrop-blur-sm">
-                    <h2 className="mb-4 font-serif text-xl font-medium text-page-top">
+                    <h2 className="font-serif text-3xl font-medium text-page-top tracking-[1px]">
                         Your Authored Pages
                     </h2>
 
@@ -270,9 +270,9 @@ export default function AdminDashboard() {
                             {leaves.map((leaf) => (
                                 <div
                                     key={leaf.id}
-                                    className="flex flex-col gap-4 py-4 sm:flex-row sm:items-center sm:justify-between"
+                                    className="flex flex-col py-4 mt-3"
                                 >
-                                    {/* Page Info */}
+                                    {/* Status & Title */}
                                     <div className="space-y-1">
                                         <div className="flex items-center gap-2">
                                             <span
@@ -282,7 +282,7 @@ export default function AdminDashboard() {
                                                         : "bg-amber-500/80"
                                                 }`}
                                             />
-                                            <span className="text-[0.68rem] font-medium uppercase tracking-[0.3em] text-foreground-soft">
+                                            <span className="text-xs font-medium uppercase tracking-[0.3em] text-foreground-soft">
                                                 {leaf.parent_chapter_id
                                                     ? "Edited leaf"
                                                     : "New leaf"}{" "}
@@ -290,70 +290,79 @@ export default function AdminDashboard() {
                                             </span>
                                         </div>
 
-                                        <h3 className="font-serif text-lg font-medium text-foreground tracking-widest">
+                                        <h3 className="font-serif text-xl font-medium tracking-widest text-foreground pt-1">
                                             {leaf.title}
                                         </h3>
+                                    </div>
 
-                                        <p className="text-[0.8rem] text-foreground-soft tracking-widest">
+                                    {/* Bottom Row: Last Revised + Action Buttons */}
+                                    <div className="flex flex-wrap items-end justify-between gap-4 mb-2">
+                                        <p className="text-xs tracking-widest text-foreground-soft font-faculty">
                                             Last revised on{" "}
                                             {formatUpdatedAt(leaf)}
                                         </p>
-                                    </div>
 
-                                    {/* Actions */}
-                                    <div className="flex flex-wrap items-center gap-2">
-                                        {/* Public Link Share */}
-                                        <button
-                                            type="button"
-                                            onClick={() => handleCopyLink(leaf)}
-                                            className="btn-action-compact"
-                                        >
-                                            {copiedId === leaf.id
-                                                ? "Copied!"
-                                                : "Copy Player Link"}
-                                        </button>
+                                        {/* Actions */}
+                                        <div className="flex flex-wrap items-center gap-2">
+                                            {/* Public Link Share */}
+                                            <button
+                                                type="button"
+                                                onClick={() =>
+                                                    handleCopyLink(leaf)
+                                                }
+                                                className="btn-action-compact"
+                                            >
+                                                {copiedId === leaf.id
+                                                    ? "Copied!"
+                                                    : "Copy Player Link"}
+                                            </button>
 
-                                        {/* View Public Page */}
-                                        <Link
-                                            href={`/u/${user_id}/${leaf.slug}`}
-                                            target="_blank"
-                                            className="btn-action-compact"
-                                        >
-                                            Preview
-                                        </Link>
+                                            {/* View Public Page */}
+                                            <Link
+                                                href={`/u/${user_id}/${leaf.slug}`}
+                                                target="_blank"
+                                                className="btn-action-compact"
+                                            >
+                                                Open Preview
+                                            </Link>
 
-                                        {/* Visibility Toggle */}
-                                        <button
-                                            type="button"
-                                            disabled={pendingId === leaf.id}
-                                            onClick={() =>
-                                                handleToggleVisibility(leaf)
-                                            }
-                                            className={`btn-toggle ${!leaf.is_hidden ? "btn-toggle-public" : "btn-toggle-hidden"}`}
-                                        >
-                                            {!leaf.is_hidden
-                                                ? "Public"
-                                                : "Hidden"}
-                                        </button>
+                                            {/* Visibility Toggle */}
+                                            <button
+                                                type="button"
+                                                disabled={pendingId === leaf.id}
+                                                onClick={() =>
+                                                    handleToggleVisibility(leaf)
+                                                }
+                                                className={`btn-toggle ${!leaf.is_hidden ? "btn-toggle-public" : "btn-toggle-hidden"}`}
+                                            >
+                                                {!leaf.is_hidden
+                                                    ? "Public"
+                                                    : "Hidden"}
+                                            </button>
 
-                                        {/* Edit */}
-                                        <button
-                                            type="button"
-                                            onClick={() => openEditModal(leaf)}
-                                            className="btn-edit"
-                                        >
-                                            Edit
-                                        </button>
+                                            {/* Edit */}
+                                            <button
+                                                type="button"
+                                                onClick={() =>
+                                                    openEditModal(leaf)
+                                                }
+                                                className="btn-edit"
+                                            >
+                                                Edit
+                                            </button>
 
-                                        {/* Delete */}
-                                        <button
-                                            type="button"
-                                            disabled={pendingId === leaf.id}
-                                            onClick={() => handleDelete(leaf)}
-                                            className="btn-delete"
-                                        >
-                                            Delete
-                                        </button>
+                                            {/* Delete */}
+                                            <button
+                                                type="button"
+                                                disabled={pendingId === leaf.id}
+                                                onClick={() =>
+                                                    handleDelete(leaf)
+                                                }
+                                                className="btn-delete"
+                                            >
+                                                Delete
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             ))}
@@ -462,14 +471,14 @@ export default function AdminDashboard() {
                                 <button
                                     type="button"
                                     onClick={() => setShowModal(false)}
-                                    className="rounded-xl border border-moonlight/50 px-4 py-2 text-sm text-foreground-soft hover:bg-mist/20"
+                                    className="rounded-xl border border-moonlight/50 px-4 py-2 text-sm text-foreground-soft hover:bg-mist/20 tracking-wider"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
                                     disabled={saving}
-                                    className="rounded-xl border border-blood/30 bg-blood/50 px-4 py-2 text-sm font-medium text-foreground hover:bg-blood/65 disabled:opacity-50"
+                                    className="rounded-xl border border-blood/80 bg-blood/65 px-4 py-2 text-sm font-medium text-foreground hover:bg-blood/80 disabled:opacity-50 tracking-wider"
                                 >
                                     {saving ? "Saving..." : "Save Leaf"}
                                 </button>

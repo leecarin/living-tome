@@ -1,13 +1,7 @@
 import Head from "next/head";
-import { useEffect, useState } from "react";
-import { motion, useReducedMotion } from "motion/react";
+import { useState } from "react";
+import { motion, useReducedMotion, Variants } from "motion/react";
 import { Cormorant_Garamond, Crimson_Text } from "next/font/google";
-import {
-    LETTER_REVEAL_BASE_DELAY_MS,
-    LETTER_REVEAL_INITIAL_DELAY_MS,
-    LETTER_REVEAL_LINE_BREAK_DELAY_MS,
-    LETTER_REVEAL_PUNCTUATION_DELAY_MS,
-} from "@/lib/chapterTiming";
 
 const headingFont = Cormorant_Garamond({
     subsets: ["latin"],
@@ -19,10 +13,11 @@ const bodyFont = Crimson_Text({
     weight: ["400", "600"],
 });
 
-const tomeScript =
-    "The mists remember.\n\n" +
-    "Within these pages are moments preserved against the censure of time.\n\n" +
-    "Read with care, for every memory carries a price, and not every truth wishes to be uncovered.";
+const tomeScript = [
+    "The mists remember.",
+    "Within these pages are moments preserved against the censure of time.",
+    "Read with care, for every memory carries a price, and not every truth wishes to be uncovered.",
+];
 
 const clues = [
     "Sacrifice opens every door worth entering.",
@@ -30,60 +25,33 @@ const clues = [
     "Leave no chapter unread.",
 ];
 
+// Fade in animation constants
+const containerVariants: Variants = {
+    hidden: { opacity: 0 },
+    show: {
+        opacity: 1,
+        transition: {
+            staggerChildren: 0.6,
+            delayChildren: 0.25,
+        },
+    },
+};
+
+const paragraphVariants: Variants = {
+    hidden: { opacity: 0, y: 12 },
+    show: {
+        opacity: 1,
+        y: 0,
+        transition: {
+            duration: 2.0,
+            ease: [0.22, 1, 0.36, 1], // TypeScript now knows this is a cubic bezier tuple
+        },
+    },
+};
+
 export default function Home() {
     const prefersReducedMotion = useReducedMotion();
-    const [typedScript, setTypedScript] = useState("");
     const [cycle, setCycle] = useState(0);
-
-    useEffect(() => {
-        let cancelled = false;
-        let timeoutId = 0;
-        let index = 0;
-
-        const step = () => {
-            if (cancelled) {
-                return;
-            }
-
-            index += 1;
-            setTypedScript(tomeScript.slice(0, index));
-
-            if (index >= tomeScript.length) {
-                return;
-            }
-
-            const currentChar = tomeScript[index - 1];
-            const nextDelay =
-                currentChar === "\n"
-                    ? LETTER_REVEAL_LINE_BREAK_DELAY_MS
-                    : /[.,;:!?]/.test(currentChar)
-                      ? LETTER_REVEAL_PUNCTUATION_DELAY_MS
-                      : LETTER_REVEAL_BASE_DELAY_MS;
-
-            timeoutId = window.setTimeout(step, nextDelay);
-        };
-
-        const start = () => {
-            if (cancelled) {
-                return;
-            }
-
-            if (prefersReducedMotion) {
-                setTypedScript(tomeScript);
-                return;
-            }
-
-            setTypedScript("");
-            timeoutId = window.setTimeout(step, LETTER_REVEAL_INITIAL_DELAY_MS);
-        };
-
-        timeoutId = window.setTimeout(start, 0);
-
-        return () => {
-            cancelled = true;
-            window.clearTimeout(timeoutId);
-        };
-    }, [cycle, prefersReducedMotion]);
 
     return (
         <>
@@ -182,7 +150,7 @@ export default function Home() {
                                     className="relative overflow-hidden bg-[linear-gradient(180deg,var(--page-top),var(--page-bottom-left))] px-5 py-6 text-ink shadow-[inset_-14px_0_28px_rgba(72,52,32,0.12),inset_0_1px_0_rgba(255,255,255,0.4)] sm:px-8 sm:py-8"
                                     initial={{ opacity: 0, x: -18 }}
                                     animate={{ opacity: 1, x: 0 }}
-                                    transition={{ duration: 0.75, delay: 0.15 }}
+                                    transition={{ duration: 0.4, delay: 0.15 }}
                                 >
                                     <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_15%_12%,rgba(255,255,255,0.25),transparent_26%),linear-gradient(90deg,rgba(70,48,22,0.06),transparent_10%,transparent_90%,rgba(70,48,22,0.05))] opacity-80" />
                                     <div className="pointer-events-none absolute inset-y-0 right-0 w-8 bg-[linear-gradient(to_right,transparent,rgba(40,28,12,0.15))]" />
@@ -194,7 +162,7 @@ export default function Home() {
                                             </div>
                                             <div className="space-y-4">
                                                 <h1
-                                                    className={`${headingFont.className} max-w-[10ch] text-5xl leading-[0.92] font-semibold tracking-tight text-ink sm:text-6xl lg:text-7xl`}
+                                                    className={`${headingFont.className} max-w-[10ch] text-5xl leading-[0.92] font-semibold tracking-tight text-ink sm:text-6xl lg:text-6xl`}
                                                 >
                                                     The Living Tome
                                                 </h1>
@@ -249,7 +217,7 @@ export default function Home() {
                                     className="relative overflow-hidden bg-[linear-gradient(180deg,var(--page-top),var(--page-bottom-right))] px-5 py-6 text-ink shadow-[inset_14px_0_28px_rgba(72,52,32,0.12),inset_0_1px_0_rgba(255,255,255,0.4)] sm:px-8 sm:py-8"
                                     initial={{ opacity: 0, x: 18 }}
                                     animate={{ opacity: 1, x: 0 }}
-                                    transition={{ duration: 0.8, delay: 0.18 }}
+                                    transition={{ duration: 0.35, delay: 0.18 }}
                                 >
                                     <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_80%_16%,rgba(255,255,255,0.2),transparent_24%),linear-gradient(90deg,rgba(70,48,22,0.05),transparent_12%,transparent_88%,rgba(70,48,22,0.07))] opacity-80" />
                                     <div className="pointer-events-none absolute inset-y-0 left-0 w-8 bg-[linear-gradient(to_left,transparent,rgba(40,28,12,0.15))]" />
@@ -291,19 +259,31 @@ export default function Home() {
                                         </div>
 
                                         <div className="relative flex flex-1 flex-col justify-between gap-8">
-                                            <div className="space-y-6 text-l leading-9 tracking-[0.01em] text-ink/85 sm:text-[1.2rem] sm:leading-[1.4rem]">
-                                                <motion.p
-                                                    key={cycle}
-                                                    className="max-w-[32rem] whitespace-pre-line"
-                                                    initial={{ opacity: 0.92 }}
-                                                    animate={{ opacity: 1 }}
-                                                    transition={{
-                                                        duration: 0.2,
-                                                    }}
-                                                >
-                                                    {typedScript}
-                                                </motion.p>
-                                            </div>
+                                            <motion.div
+                                                key={cycle}
+                                                className="space-y-4 text-l leading-9 tracking-[0.01em] text-ink/85 sm:text-[1.2rem] sm:leading-[1.8rem]"
+                                                variants={containerVariants}
+                                                initial={
+                                                    prefersReducedMotion
+                                                        ? "show"
+                                                        : "hidden"
+                                                }
+                                                animate="show"
+                                            >
+                                                {tomeScript.map(
+                                                    (paragraph, idx) => (
+                                                        <motion.p
+                                                            key={idx}
+                                                            className="max-w-[32rem]"
+                                                            variants={
+                                                                paragraphVariants
+                                                            }
+                                                        >
+                                                            {paragraph}
+                                                        </motion.p>
+                                                    ),
+                                                )}
+                                            </motion.div>
 
                                             <div className="flex flex-wrap items-center justify-between gap-4 border-t border-[#c2b08d]/80 pt-5 text-[0.78rem] uppercase tracking-[0.32em] text-[#8c7457]">
                                                 <span>
