@@ -66,12 +66,12 @@ export default function MarkdownBlock({ content }: MarkdownBlockProps) {
                         </h4>
                     ),
                     code: ({ children }) => (
-                        <code className="rounded bg-black/5 px-1 py-0.5 text-[0.92em] tracking-normal">
+                        <code className="rounded bg-black/5 px-1 py-0.5 text-sm tracking-normal">
                             {children}
                         </code>
                     ),
                     pre: ({ children }) => (
-                        <pre className="m-0 overflow-x-auto rounded-xl bg-black/5 p-3 text-[0.95em] leading-7 tracking-normal">
+                        <pre className="m-0 overflow-x-auto rounded-xl bg-black/5 p-3 text-sm leading-7 tracking-normal">
                             {children}
                         </pre>
                     ),
