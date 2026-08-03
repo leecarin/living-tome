@@ -50,7 +50,7 @@ Try out the latest alpha deployment: **[living-tome-alpha.vercel.app](https://li
 ### 1. Clone the Repository
 
 ```bash
-git clone [https://github.com/leecarin/living-tome.git](https://github.com/leecarin/living-tome.git)
+git clone https://github.com/leecarin/living-tome.git
 cd living-tome
 ```
 
