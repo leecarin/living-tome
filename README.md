@@ -82,6 +82,8 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) in your browser to view the application.
 
+---
+
 ## Continuous Integration and Automated Testing
 
 This repository uses **GitHub Actions** to automatically validate code quality on all pushes and pull requests targeting the `main` branch.
@@ -96,8 +98,10 @@ Every PR and commit automatically triggers a CI pipeline that runs:
 
 ### Deployment Protections
 
-- Pull Requests: All CI status checks *must* pass before branches can be merged into `main`.
+- Pull Requests: All CI status checks _must_ pass before branches can be merged into `main`.
 - Production Deployments: Vercel automatically deploys updates to production upon successful merge.
+
+---
 
 ## Available Scripts
 
@@ -106,6 +110,8 @@ Every PR and commit automatically triggers a CI pipeline that runs:
 - `npm run start`: Runs the compiled production build locally.
 - `npm test`: Executes the Jest unit test suite.
 - `npm run lint`: Runs ESLint to check for code formatting issues.
+
+---
 
 ## Project Architecture
 
@@ -123,9 +129,11 @@ src/
 └── store/               # Global state atoms (Jotai)
 ```
 
+---
+
 ## Contributing
 
-Contributions, feedback, and feature requests are welcome! If you find a bug or have an idea to make running *The Interactive Tome of Strahd* even better:
+Contributions, feedback, and feature requests are welcome! If you find a bug or have an idea to make running _The Interactive Tome of Strahd_ even better:
 
 1. Open an issue describing the bug or feature request.
 
@@ -137,9 +145,13 @@ Contributions, feedback, and feature requests are welcome! If you find a bug or 
 
 5. Open a Pull Request.
 
+---
+
 ## License
 
 Distributed under the MIT License. See LICENSE.md for more information.
+
+---
 
 ## Acknowledgements
 
