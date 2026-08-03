@@ -1,91 +1,131 @@
-# The Living Tome
+# The Living Tome (Interactive Tome of Strahd Digital Companion)
 
-The Living Tome is a DM-focused companion project for a dynamic, digital version of [The Interactive Tome of Strahd](https://www.dmsguild.com/en/product/301867/the-interactive-tome-of-strahd) by The Aciduous Adventurer, inspired by the popular addition to the Curse of Strahd 5e module. The long-term vision is to give Dungeon Masters a flexible, atmospheric tool for presenting campaign content to players while allowing them to adapt, extend, or replace chapters as needed.
+[![Next.js](https://img.shields.io/badge/Next.js-16-black?style=flat-square&logo=next.js)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react)](https://react.dev/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4-38B2AC?style=flat-square&logo=tailwind-css)](https://tailwindcss.com/)
+[![Firebase](https://img.shields.io/badge/Firebase-Auth_%26_Firestore-FFCA28?style=flat-square&logo=firebase)](https://firebase.google.com/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](LICENSE)
 
-At the moment, the project is a working foundation for that experience: it includes an animated, book-like interface, Firebase-backed chapter authoring, and public chapter routes. Over time, it will support read-only pages based on the original mod content, DM accounts that can modify or create chapters, and richer rendering for HTML and Markdown content.
+> A dynamic, atmospheric digital companion for Dungeon Masters running **Curse of Strahd** and the popular _[The Interactive Tome of Strahd mod](https://www.dmsguild.com/en/product/301867/the-interactive-tome-of-strahd)_.
 
-## What’s New
+**The Living Tome** provides DMs with a book-like, interactive interface to present campaign lore to players. It bridges the gap between static PDF handouts and full-table immersion, allowing DMs to customize, extend, or hide chapter leaves on the fly as their party uncovers the dark history of Barovia.
 
-- An animated landing chapter with parchment-style motion and reveal effects.
-- Firebase authentication for sign-in, Google OAuth, password reset, and admin access.
-- An admin dashboard for creating, editing, hiding, deleting, and sharing custom chapter leaves.
-- Public chapter pages at dynamic routes such as `/u/[user_id]/[slug]` for published leaves.
-- Firestore-backed chapter persistence with shared serialization and route helpers.
+---
 
-## Project Goals
+## Features
 
-- Present campaign content in a visually immersive, book-like format.
-- Support read-only pages derived from the original Interactive Tome of Strahd material.
-- Let DMs customize chapter content for their own tables.
-- Eventually support HTML and Markdown rendering for richer narrative formatting.
-- Keep the experience lightweight, flexible, and easy to extend.
+- **Immersive Book Interface:** Parchment-style styling with gradual ink reveal mechanics.
+- **DM Authoring Dashboard:** Create, edit, conceal, or delete custom chapter leaves tailored to your specific campaign state.
+- **Public Leaf Sharing & Live Preview:** Publish unique URLs (`/u/[user_id]/[slug]`) for your players. DMs get a dedicated preview mode for hidden leaves.
+- **Markdown-Powered Narrative:** Full support for Markdown formatting (headings, lists, blockquotes, code blocks) without breaking book-layout page splitting.
+- **Secure Data Persistence:** Firebase Authentication (Google OAuth + Email/Password) backed by Firestore security rules.
+
+---
+
+## Live Demo
+
+Try out the latest alpha deployment: **[living-tome-alpha.vercel.app](https://living-tome-alpha.vercel.app/)**
+
+---
 
 ## Tech Stack
 
-- Next.js 16 with the Pages Router
-- React 19
-- Motion for React
-- TypeScript
-- Firebase Authentication + Firestore
-- Tailwind CSS 4
-- Jest for testing
+- **Framework:** Next.js 16 (Pages Router) + React 19
+- **Styling & Motion:** Tailwind CSS 4, Motion for React
+- **Database & Auth:** Firebase Auth, Firestore
+- **State Management:** Jotai
+- **Testing:** Jest
+- **Language:** TypeScript
 
-## Access the App
+---
 
-The project is currently deployed at https://living-tome-alpha.vercel.app/.
-
-## Development Setup
+## Local Development Setup
 
 ### Prerequisites
 
-- Node.js 20+
-- npm
-- A Firebase project with Authentication and Firestore enabled
+- **Node.js**: v20 or higher
+- **npm**: v10 or higher
+- **Firebase Project**: A Firebase project with **Authentication** (Email/Password & Google) and **Firestore Database** enabled.
 
-### Environment Variables
-
-Create a local environment file with the Firebase client settings:
+### 1. Clone the Repository
 
 ```bash
-NEXT_PUBLIC_FIREBASE_API_KEY=
-NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=
-NEXT_PUBLIC_FIREBASE_PROJECT_ID=
-NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=
-NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=
-NEXT_PUBLIC_FIREBASE_APP_ID=
-NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=
+git clone [https://github.com/leecarin/living-tome.git](https://github.com/leecarin/living-tome.git)
+cd living-tome
 ```
 
-### Install and Run Locally
+### 2. Install Dependencies
 
 ```bash
 npm install
+```
+
+### 3. Configure Your Environment
+
+Create a `.env.local` file in the root directory and add your Firebase web app configuration:
+
+```text
+NEXT_PUBLIC_FIREBASE_API_KEY=your_api_key
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_project_id.firebaseapp.com
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your_project_id.appspot.com
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_messaging_sender_id
+NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id
+NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=your_measurement_id
+```
+
+### 4. Run the Development Server
+
+```bash
 npm run dev
 ```
 
-Open http://localhost:3000 in your browser.
+Open [http://localhost:3000](http://localhost:3000) in your browser to view the application.
 
 ## Available Scripts
 
-- `npm run dev` - start the local development server
-- `npm run build` - create a production build
-- `npm run start` - run the production build locally
-- `npm run lint` - run ESLint
-- `npm test` - run the Jest test suite
-- `npm run seed` - run the Firestore seeding script
+- `npm run dev`: Starts the Next.js development server.
+- `npm run build`: Builds the application for production.
+- `npm run start`: Runs the compiled production build locally.
+- `npm test`: Executes the Jest unit test suite.
+- `npm run lint`: Runs ESLint to check for code formatting issues.
 
-## Main Routes
+## Project Architecture
 
-- `/` - the animated opening chapter
-- `/auth` - authentication flow for sign-in and account creation
-- `/admin` - the chapter management dashboard
-- `/u/[user_id]/[slug]` - a public chapter page for a published leaf
+```text
+src/
+├── components/          # Reusable UI, Tome page layout, & Markdown components
+├── hooks/               # Custom hooks (e.g., passage reveal timing mechanics)
+├── lib/
+│   ├── firebase/        # Client initialization, Auth wrappers, & Firestore CRUD
+├── pages/
+│   ├── index.tsx        # Animated landing page / Tome cover
+│   ├── auth/            # Sign-in & registration flow
+│   ├── admin/           # DM dashboard for managing custom chapters
+│   └── u/[user_id]/     # Public & Preview chapter routes
+└── store/               # Global state atoms (Jotai)
+```
 
-## Project Structure
+## Contributing
 
-- `src/pages/index.tsx` - the opening chapter experience
-- `src/pages/auth/index.tsx` - authentication UI
-- `src/pages/admin/index.tsx` - admin chapter management
-- `src/pages/u/[user_id]/[slug].tsx` - public chapter route
-- `src/lib/firebase/` - Firebase auth, client setup, and Firestore helpers
-- `src/components/` - shared book layout, route protection, and UI components
+Contributions, feedback, and feature requests are welcome! If you find a bug or have an idea to make running The Interactive Tome of Strahd even better:
+
+1. Open an issue describing the bug or feature request.
+
+2. Fork the repository and create a feature branch (git checkout -b feature/amazing-feature).
+
+3. Commit your changes (git commit -m 'Add amazing feature').
+
+4. Push to the branch (git push origin feature/amazing-feature).
+
+5. Open a Pull Request.
+
+## License
+
+Distributed under the MIT License. See LICENSE.md for more information.
+
+## Acknowledgements
+
+The _[The Interactive Tome of Strahd](https://www.dmsguild.com/en/product/301867/the-interactive-tome-of-strahd)_ module created by The Aciduous Adventurer.
+
+Wizards of the Coast for the _Curse of Strahd_ setting.

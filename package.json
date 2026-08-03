@@ -8,8 +8,7 @@
         "start": "next start",
         "lint": "eslint .",
         "test": "jest",
-        "test:watch": "jest --watch",
-        "seed": "npx tsx src/lib/firebase/db/seed.ts"
+        "test:watch": "jest --watch"
     },
     "dependencies": {
         "firebase": "^12.16.0",
