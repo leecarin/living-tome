@@ -14,7 +14,7 @@
 
 ## Features
 
-- **Immersive Book Interface:** Parchment-style styling with gradual ink reveal mechanics.
+- **Immersive Book Interface:** Parchment-like styling with gradual ink reveal mechanics.
 - **DM Authoring Dashboard:** Create, edit, conceal, or delete custom chapter leaves tailored to your specific campaign state.
 - **Public Leaf Sharing & Live Preview:** Publish unique URLs (`/u/[user_id]/[slug]`) for your players. DMs get a dedicated preview mode for hidden leaves.
 - **Markdown-Powered Narrative:** Full support for Markdown formatting (headings, lists, blockquotes, code blocks) without breaking book-layout page splitting.
@@ -82,6 +82,23 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) in your browser to view the application.
 
+## Continuous Integration and Automated Testing
+
+This repository uses **GitHub Actions** to automatically validate code quality on all pushes and pull requests targeting the `main` branch.
+
+### Automated Checks (`Run Unit Tests and Lint`)
+
+Every PR and commit automatically triggers a CI pipeline that runs:
+
+1. Type Checking: `npx tsc --noEmit` to ensure Typescript compilation
+2. Linting: `npm run lint` with ESLint
+3. Unit Tests: `npm test` executes Jest test suites.
+
+### Deployment Protections
+
+- Pull Requests: All CI status checks *must* pass before branches can be merged into `main`.
+- Production Deployments: Vercel automatically deploys updates to production upon successful merge.
+
 ## Available Scripts
 
 - `npm run dev`: Starts the Next.js development server.
@@ -108,7 +125,7 @@ src/
 
 ## Contributing
 
-Contributions, feedback, and feature requests are welcome! If you find a bug or have an idea to make running The Interactive Tome of Strahd even better:
+Contributions, feedback, and feature requests are welcome! If you find a bug or have an idea to make running *The Interactive Tome of Strahd* even better:
 
 1. Open an issue describing the bug or feature request.
 
