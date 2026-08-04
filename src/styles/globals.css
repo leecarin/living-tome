@@ -2,6 +2,12 @@
 @import url("https://fonts.googleapis.com/css2?family=Faculty+Glyphic&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Whisper&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Nothing+You+Could+Do&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Allison&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Square+Peg&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Mynerve&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&display=swap");
 
 @import "tailwindcss";
 
@@ -25,6 +31,12 @@
     --mist: #94a3b8;
     --moonlight: #e2e8f0;
     --gold: #d97706;
+
+    /* Active tome passage font family variable (defaults to Whisper) */
+    --active-passage-font: "Whisper", cursive;
+    --active-passage-size: 1.7rem;
+    --active-passage-line-height: 2.2rem;
+    --active-passage-tracking: 1.5px;
 }
 
 @theme {
@@ -45,19 +57,30 @@
     --color-moonlight: var(--moonlight);
     --color-gold: var(--gold);
 
-    /* Fonts */
+    /* Font Definitions */
     --font-serif: "Crimson Text", serif;
     --font-sans: "Quicksand", sans-serif;
     --font-cursive: "Whisper", cursive;
     --font-faculty: "Faculty Glyphic", sans-serif;
+    --font-nothing: "Nothing You Could Do", cursive;
+    --font-allison: "Allison", cursive;
+    --font-square-peg: "Square Peg", cursive;
+    --font-mynerve: "Mynerve", cursive;
+    --font-imfell: "IM Fell English", serif;
+    --font-cormorant: "Cormorant Garamond", serif;
 }
 
 @utility chapter-title {
     @apply flex items-center gap-3 text-[0.66rem] uppercase tracking-[0.4em] text-[#8c7457];
 }
 
+/* Chapter Body Utility - dynamically uses --active-passage-font */
 @utility chapter-body {
-    @apply space-y-4 text-[1.7rem] leading-[2.4rem] text-ink tracking-[2.1px] font-cursive;
+    @apply space-y-4 text-ink;
+    font-family: var(--active-passage-font) !important;
+    font-size: var(--active-passage-size) !important;
+    line-height: var(--active-passage-line-height) !important;
+    letter-spacing: var(--active-passage-tracking) !important;
     font-weight: 400;
     font-style: normal;
 }
@@ -236,4 +259,31 @@ body {
 /* Modals */
 @utility input-box {
     @apply w-full rounded-xl border border-moonlight/30 bg-slate-900/80 px-4 py-2.5 text-sm text-foreground focus:border-moonlight/50 focus:outline-none;
+}
+
+/* Custom scroll bar */
+
+/* Webkit (Chrome, Safari, Edge) */
+.tome-scrollbar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.tome-scrollbar::-webkit-scrollbar-track {
+    background: var(--background);
+    border-radius: 9999px;
+}
+
+.tome-scrollbar::-webkit-scrollbar-thumb {
+    background: var(--mist);
+    border-radius: 9999px;
+}
+
+.tome-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: var(--moonlight);
+}
+
+/* Firefox standard scrollbar properties */
+.tome-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: var(--mist) var(--background);
 }

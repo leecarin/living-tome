@@ -4,6 +4,8 @@ import { motion, useReducedMotion } from "motion/react";
 import SkipAnimationButton from "@/components/ui/SkipAnimationButton";
 import { formatTomeLayout } from "@/lib/tomeLayoutFormatting";
 import MarkdownBlock from "@/components/ui/MarkdownBlock";
+import FontDropdown from "./ui/FontDropdown";
+import { FontOption, TOME_FONTS, DEFAULT_FONT_STYLES } from "@/config/fonts";
 
 interface TomeLayoutProps {
     title: string;
@@ -54,6 +56,31 @@ export default function TomeLayout({
     leftPage,
     rightPage,
 }: TomeLayoutProps) {
+    // font dropdown vars and handler
+    const [selectedFont, setSelectedFont] = useState<FontOption>(TOME_FONTS[0]);
+
+    const handleSelectFont = (font: FontOption) => {
+        setSelectedFont(font);
+
+        const root = document.documentElement;
+
+        // Set font family
+        root.style.setProperty("--active-passage-font", font.fontFamily);
+
+        // Apply font-specific size & spacing adjustments with clean fallbacks
+        root.style.setProperty(
+            "--active-passage-size",
+            font.fontSize ?? DEFAULT_FONT_STYLES.fontSize,
+        );
+        root.style.setProperty(
+            "--active-passage-line-height",
+            font.lineHeight ?? DEFAULT_FONT_STYLES.lineHeight,
+        );
+        root.style.setProperty(
+            "--active-passage-tracking",
+            font.tracking ?? DEFAULT_FONT_STYLES.tracking,
+        );
+    };
     const prefersReducedMotion = useReducedMotion();
 
     const leftPageRef = useRef<HTMLDivElement>(null);
@@ -163,8 +190,16 @@ export default function TomeLayout({
                         <span>{headerLabel}</span>
 
                         <div className="flex items-center gap-3">
+                            {/* Font Selector Dropdown */}
+                            <FontDropdown
+                                selectedFontId={selectedFont.id}
+                                onSelectFont={handleSelectFont}
+                            />
+
+                            {/* Skip Animation Button */}
                             <SkipAnimationButton />
 
+                            {/* Refresh Ink button */}
                             {onRefreshInk && (
                                 <motion.button
                                     type="button"
@@ -187,19 +222,7 @@ export default function TomeLayout({
                         </div>
                     </div>
 
-                    <motion.section
-                        className="relative overflow-hidden rounded-[2.4rem] border border-slate-700/80 bg-slate-900 p-3 shadow-[0_48px_140px_rgba(0,0,0,0.7)] ring-1 ring-black/50 sm:p-4"
-                        whileHover={
-                            prefersReducedMotion
-                                ? undefined
-                                : { y: -2, scale: 1.003 }
-                        }
-                        transition={{
-                            type: "spring",
-                            stiffness: 180,
-                            damping: 22,
-                        }}
-                    >
+                    <motion.section className="relative overflow-hidden rounded-[2.4rem] border border-slate-700/80 bg-slate-900 p-3 shadow-[0_48px_140px_rgba(0,0,0,0.7)] ring-1 ring-black/50 sm:p-4">
                         <div className="pointer-events-none absolute inset-y-0 left-1/2 w-12 -translate-x-1/2 bg-slate-950/80 shadow-[0_0_28px_rgba(0,0,0,0.5)]" />
                         <div className="pointer-events-none absolute inset-y-3 left-1/2 w-[1px] -translate-x-1/2 bg-slate-700/40" />
 
@@ -218,7 +241,12 @@ export default function TomeLayout({
                                     aria-hidden="true"
                                     className="invisible pointer-events-none absolute inset-x-0 top-0 px-5 py-6 sm:px-8 sm:py-8"
                                 >
-                                    <div className="chapter-body">
+                                    <div
+                                        className="chapter-body"
+                                        style={{
+                                            fontFamily: selectedFont.fontFamily,
+                                        }}
+                                    >
                                         {allParagraphs.map((para, idx) => (
                                             <MarkdownBlock
                                                 key={idx}
