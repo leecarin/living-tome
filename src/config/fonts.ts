@@ -1,5 +1,17 @@
 // src/config/fonts.ts
 
+import {
+    whisper,
+    crimsonText,
+    facultyGlyphic,
+    nothingYouCouldDo,
+    allison,
+    squarePeg,
+    mynerve,
+    imFell,
+    cormorant,
+} from "@/config/nextFonts";
+
 export interface FontOption {
     id: string;
     label: string;
@@ -22,7 +34,7 @@ export const TOME_FONTS: FontOption[] = [
     {
         id: "whisper",
         label: "Whisper",
-        fontFamily: '"Whisper", cursive',
+        fontFamily: whisper.style.fontFamily,
         className: "font-cursive",
         fontSize: DEFAULT_FONT_STYLES.fontSize,
         lineHeight: DEFAULT_FONT_STYLES.lineHeight,
@@ -31,7 +43,7 @@ export const TOME_FONTS: FontOption[] = [
     {
         id: "crimson",
         label: "Crimson Text",
-        fontFamily: '"Crimson Text", serif',
+        fontFamily: crimsonText.style.fontFamily,
         className: "font-serif",
         fontSize: "1.3rem",
         lineHeight: "1.6rem",
@@ -40,7 +52,7 @@ export const TOME_FONTS: FontOption[] = [
     {
         id: "faculty",
         label: "Faculty Glyphic",
-        fontFamily: '"Faculty Glyphic", sans-serif',
+        fontFamily: facultyGlyphic.style.fontFamily,
         className: "font-faculty",
         fontSize: "1.2rem",
         lineHeight: "1.6rem",
@@ -49,7 +61,7 @@ export const TOME_FONTS: FontOption[] = [
     {
         id: "nothing-you-could-do",
         label: "Nothing You Could Do",
-        fontFamily: '"Nothing You Could Do", cursive',
+        fontFamily: nothingYouCouldDo.style.fontFamily,
         className: "font-nothing",
         fontSize: "1.3rem",
         lineHeight: "1.7rem",
@@ -58,7 +70,7 @@ export const TOME_FONTS: FontOption[] = [
     {
         id: "allison",
         label: "Allison",
-        fontFamily: '"Allison", cursive',
+        fontFamily: allison.style.fontFamily,
         className: "font-allison",
         fontSize: "2.0rem",
         lineHeight: "2.1rem",
@@ -67,7 +79,7 @@ export const TOME_FONTS: FontOption[] = [
     {
         id: "square-peg",
         label: "Square Peg",
-        fontFamily: '"Square Peg", cursive',
+        fontFamily: squarePeg.style.fontFamily,
         className: "font-square-peg",
         fontSize: "1.8rem",
         lineHeight: "2.4rem",
@@ -76,7 +88,7 @@ export const TOME_FONTS: FontOption[] = [
     {
         id: "mynerve",
         label: "Mynerve",
-        fontFamily: '"Mynerve", cursive',
+        fontFamily: mynerve.style.fontFamily,
         className: "font-mynerve",
         fontSize: "1.3rem",
         lineHeight: "2.0rem",
@@ -85,7 +97,7 @@ export const TOME_FONTS: FontOption[] = [
     {
         id: "im-fell",
         label: "IM Fell English",
-        fontFamily: '"IM Fell English", serif',
+        fontFamily: imFell.style.fontFamily,
         className: "font-imfell",
         fontSize: "1.2rem",
         lineHeight: "1.8rem",
@@ -94,7 +106,7 @@ export const TOME_FONTS: FontOption[] = [
     {
         id: "cormorant",
         label: "Cormorant Garamond",
-        fontFamily: '"Cormorant Garamond", serif',
+        fontFamily: cormorant.style.fontFamily,
         className: "font-cormorant",
         fontSize: "1.2rem",
         lineHeight: "1.8rem",
