@@ -16,6 +16,7 @@
 
 - **Immersive Book Interface:** Parchment-like styling with gradual ink reveal mechanics.
 - **DM Authoring Dashboard:** Create, edit, conceal, or delete custom chapter leaves tailored to your specific campaign state.
+- **Font Picker:** Choose a font for your chapters from a list of cursive, serif, or sans serif typefaces.
 - **Public Leaf Sharing & Live Preview:** Publish unique URLs (`/u/[user_id]/[slug]`) for your players. DMs get a dedicated preview mode for hidden leaves.
 - **Markdown-Powered Narrative:** Full support for Markdown formatting (headings, lists, blockquotes, code blocks) without breaking book-layout page splitting.
 - **Secure Data Persistence:** Firebase Authentication (Google OAuth + Email/Password) backed by Firestore security rules.
