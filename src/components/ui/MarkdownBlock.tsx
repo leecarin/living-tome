@@ -7,10 +7,7 @@ interface MarkdownBlockProps {
 
 export default function MarkdownBlock({ content }: MarkdownBlockProps) {
     return (
-        <div
-            data-tome-block
-            className="break-inside-avoid text-[1.7rem] leading-[2.4rem] tracking-[2.1px] text-ink font-cursive"
-        >
+        <div data-tome-block className="break-inside-avoid chapter-body">
             <ReactMarkdown
                 remarkPlugins={[remarkGfm]}
                 components={{
