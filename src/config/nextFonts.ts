@@ -10,6 +10,9 @@ import {
     Mynerve,
     IM_Fell_English,
     Cormorant_Garamond,
+    Caveat,
+    Ephesis,
+    Oooh_Baby,
 } from "next/font/google";
 
 export const whisper = Whisper({ weight: "400", subsets: ["latin"] });
@@ -34,3 +37,9 @@ export const cormorant = Cormorant_Garamond({
     weight: ["400", "600", "700"],
     subsets: ["latin"],
 });
+export const caveat = Caveat({
+    weight: ["400", "600", "700"],
+    subsets: ["latin"],
+});
+export const ephesis = Ephesis({ weight: "400", subsets: ["latin"] });
+export const ooohBaby = Oooh_Baby({ weight: "400", subsets: ["latin"] });
