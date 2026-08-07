@@ -10,6 +10,9 @@ import {
     mynerve,
     imFell,
     cormorant,
+    caveat,
+    ephesis,
+    ooohBaby,
 } from "@/config/nextFonts";
 
 export interface FontOption {
@@ -31,6 +34,7 @@ export const DEFAULT_FONT_STYLES = {
 };
 
 export const TOME_FONTS: FontOption[] = [
+    // cursive
     {
         id: "whisper",
         label: "Whisper",
@@ -39,24 +43,6 @@ export const TOME_FONTS: FontOption[] = [
         fontSize: DEFAULT_FONT_STYLES.fontSize,
         lineHeight: DEFAULT_FONT_STYLES.lineHeight,
         tracking: DEFAULT_FONT_STYLES.tracking,
-    },
-    {
-        id: "crimson",
-        label: "Crimson Text",
-        fontFamily: crimsonText.style.fontFamily,
-        className: "font-serif",
-        fontSize: "1.3rem",
-        lineHeight: "1.6rem",
-        tracking: "0.5px",
-    },
-    {
-        id: "faculty",
-        label: "Faculty Glyphic",
-        fontFamily: facultyGlyphic.style.fontFamily,
-        className: "font-faculty",
-        fontSize: "1.2rem",
-        lineHeight: "1.6rem",
-        tracking: "0.5px",
     },
     {
         id: "nothing-you-could-do",
@@ -93,6 +79,53 @@ export const TOME_FONTS: FontOption[] = [
         fontSize: "1.3rem",
         lineHeight: "2.0rem",
         tracking: "0.7px",
+    },
+    {
+        id: "caveat",
+        label: "Caveat",
+        fontFamily: caveat.style.fontFamily,
+        className: "font-caveat",
+        fontSize: "1.6rem",
+        lineHeight: DEFAULT_FONT_STYLES.lineHeight,
+        tracking: DEFAULT_FONT_STYLES.tracking,
+    },
+    {
+        id: "ephesis",
+        label: "Ephesis",
+        fontFamily: ephesis.style.fontFamily,
+        className: "font-ephesis",
+        fontSize: DEFAULT_FONT_STYLES.fontSize,
+        lineHeight: DEFAULT_FONT_STYLES.lineHeight,
+        tracking: DEFAULT_FONT_STYLES.tracking,
+    },
+    {
+        id: "ooohBaby",
+        label: "Oooh Baby",
+        fontFamily: ooohBaby.style.fontFamily,
+        className: "font-baby",
+        fontSize: "1.4rem",
+        lineHeight: DEFAULT_FONT_STYLES.lineHeight,
+        tracking: DEFAULT_FONT_STYLES.tracking,
+    },
+    // sans serif
+    {
+        id: "faculty",
+        label: "Faculty Glyphic",
+        fontFamily: facultyGlyphic.style.fontFamily,
+        className: "font-faculty",
+        fontSize: "1.2rem",
+        lineHeight: "1.6rem",
+        tracking: "0.5px",
+    },
+    // serif
+    {
+        id: "crimson",
+        label: "Crimson Text",
+        fontFamily: crimsonText.style.fontFamily,
+        className: "font-serif",
+        fontSize: "1.3rem",
+        lineHeight: "1.6rem",
+        tracking: "0.5px",
     },
     {
         id: "im-fell",
