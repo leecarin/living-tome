@@ -76,7 +76,7 @@ export default function FontDropdown({
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: -6, scale: 0.98 }}
                         transition={{ duration: 0.15 }}
-                        className="absolute right-0 z-50 mt-2 max-h min-w-max overflow-y-auto rounded-xl border border-slate-700/80 bg-slate-900/95 p-1.5 pr-2 shadow-2xl backdrop-blur-md focus:outline-none tome-scrollbar"
+                        className="absolute right-0 z-50 mt-2 max-h-[18rem] min-w-max overflow-y-auto rounded-xl border border-slate-700/80 bg-slate-900/95 p-1.5 pr-2 shadow-2xl backdrop-blur-md focus:outline-none tome-scrollbar"
                     >
                         {TOME_FONTS.map((font) => {
                             const isSelected = font.id === currentFont.id;
@@ -98,7 +98,7 @@ export default function FontDropdown({
                                     {/* Preview string rendered in its native font */}
                                     <span
                                         style={{ fontFamily: font.fontFamily }}
-                                        className="truncate normal-case text-sm tracking-[2px]"
+                                        className="truncate normal-case text-[1.0rem] tracking-[2px]"
                                     >
                                         {font.label}
                                     </span>
