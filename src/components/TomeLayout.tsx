@@ -56,18 +56,12 @@ export default function TomeLayout({
     leftPage,
     rightPage,
 }: TomeLayoutProps) {
-    // font dropdown vars and handler
     const [selectedFont, setSelectedFont] = useState<FontOption>(TOME_FONTS[0]);
 
     const handleSelectFont = (font: FontOption) => {
         setSelectedFont(font);
-
         const root = document.documentElement;
-
-        // Set font family
         root.style.setProperty("--active-passage-font", font.fontFamily);
-
-        // Apply font-specific size & spacing adjustments with clean fallbacks
         root.style.setProperty(
             "--active-passage-size",
             font.fontSize ?? DEFAULT_FONT_STYLES.fontSize,
@@ -81,6 +75,7 @@ export default function TomeLayout({
             font.tracking ?? DEFAULT_FONT_STYLES.tracking,
         );
     };
+
     const prefersReducedMotion = useReducedMotion();
 
     const leftPageRef = useRef<HTMLDivElement>(null);
@@ -179,50 +174,65 @@ export default function TomeLayout({
                 <meta name="description" content={description} />
             </Head>
 
-            <main className="relative min-h-screen overflow-hidden px-4 py-8 text-foreground sm:px-6 lg:px-8">
+            <main className="relative min-h-screen overflow-x-clip px-3 py-4 text-foreground sm:px-6 sm:py-8 lg:px-8">
                 <motion.div
                     className="mx-auto w-full max-w-6xl"
                     initial={{ opacity: 0, y: 18 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
                 >
-                    <div className="mb-5 flex items-center justify-between gap-4 px-1 text-[0.68rem] uppercase tracking-[0.48em] text-foreground-soft">
-                        <span>{headerLabel}</span>
-
-                        <div className="flex items-center gap-3">
-                            {/* Font Selector Dropdown */}
+                    {/* TWO-ROW STACKED TOOLBAR */}
+                    <div className="relative z-50 mb-4 flex flex-col items-end gap-2.5 px-1">
+                        {/* Row 1: Right-Aligned Font Selector */}
+                        <div className="relative z-50 flex w-full justify-end">
                             <FontDropdown
                                 selectedFontId={selectedFont.id}
                                 onSelectFont={handleSelectFont}
                             />
+                        </div>
 
-                            {/* Skip Animation Button */}
-                            <SkipAnimationButton />
+                        {/* Row 2: Right-Aligned Action Buttons */}
+                        <div className="flex w-full items-center justify-end gap-2">
+                            <div className="shrink-0">
+                                <SkipAnimationButton />
+                            </div>
 
-                            {/* Refresh Ink button */}
                             {onRefreshInk && (
                                 <motion.button
                                     type="button"
-                                    className="btn-ink"
+                                    className="btn-ink flex shrink-0 items-center justify-center rounded-lg p-2.5 text-xs sm:px-3 sm:py-1.5"
                                     onClick={onRefreshInk}
                                     whileHover={
                                         prefersReducedMotion
                                             ? undefined
-                                            : { y: -2 }
+                                            : { y: -1 }
                                     }
                                     whileTap={
                                         prefersReducedMotion
                                             ? undefined
-                                            : { scale: 0.98 }
+                                            : { scale: 0.96 }
                                     }
+                                    aria-label="Refresh Ink"
                                 >
-                                    Refresh ink
+                                    <svg
+                                        className="h-3.5 w-3.5 shrink-0"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth={2}
+                                            d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                                        />
+                                    </svg>
                                 </motion.button>
                             )}
                         </div>
                     </div>
 
-                    <motion.section className="relative overflow-hidden rounded-[2.4rem] border border-slate-700/80 bg-slate-900 p-3 shadow-[0_48px_140px_rgba(0,0,0,0.7)] ring-1 ring-black/50 sm:p-4">
+                    <motion.section className="relative z-10 overflow-hidden rounded-[2.4rem] border border-slate-700/80 bg-slate-900 p-3 shadow-[0_48px_140px_rgba(0,0,0,0.7)] ring-1 ring-black/50 sm:p-4">
                         <div className="pointer-events-none absolute inset-y-0 left-1/2 w-12 -translate-x-1/2 bg-slate-950/80 shadow-[0_0_28px_rgba(0,0,0,0.5)]" />
                         <div className="pointer-events-none absolute inset-y-3 left-1/2 w-[1px] -translate-x-1/2 bg-slate-700/40" />
 
