@@ -1,35 +1,9 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState, type ReactNode } from "react";
-import { useAtomValue } from "jotai";
-import useSWR from "swr";
 
-import { authAtom } from "@/store/auth";
 import { logoutUser } from "@/lib/firebase/auth";
-import {
-    getOriginalChapters,
-    getUserChapters,
-} from "@/lib/firebase/db/firestore";
-import {
-    serializeChapter,
-    type SerializedChapter,
-} from "@/lib/firebase/db/serialize";
-
-// Static fallback / primary routes that should always exist
-const staticOriginalChapters = [
-    { href: "/", label: "Home Page", code: "I", category: "Front leaf" },
-];
-
-async function fetchOriginalChapters() {
-    const docs = await getOriginalChapters();
-    return docs.filter((doc) => !doc.is_hidden).map(serializeChapter);
-}
-
-async function fetchUserChapters([, uid]: [string, string]) {
-    if (!uid) return [];
-    const docs = await getUserChapters(uid);
-    return docs.filter((doc) => !doc.is_hidden).map(serializeChapter);
-}
+import { useChapterList } from "@/hooks/useChapterList";
 
 export default function ChapterShell({ children }: { children: ReactNode }) {
     const router = useRouter();
@@ -40,19 +14,7 @@ export default function ChapterShell({ children }: { children: ReactNode }) {
     const [isOriginalOpen, setIsOriginalOpen] = useState(true);
     const [isCustomOpen, setIsCustomOpen] = useState(true);
 
-    const { user } = useAtomValue(authAtom);
-
-    // Fetch original read-only chapters
-    const { data: originalChapters = [] } = useSWR<SerializedChapter[]>(
-        "original-chapters-list",
-        fetchOriginalChapters,
-    );
-
-    // Fetch logged-in user's custom chapters
-    const { data: customChapters = [] } = useSWR<SerializedChapter[]>(
-        user ? ["user-chapters-list", user.uid] : null,
-        fetchUserChapters,
-    );
+    const { user, allOriginals, allCustoms } = useChapterList();
 
     const handleLogout = async () => {
         try {
@@ -62,26 +24,6 @@ export default function ChapterShell({ children }: { children: ReactNode }) {
             console.error("Failed to sign out:", error);
         }
     };
-
-    // Combine static original routes with dynamic ones from Firestore slug routing
-    const allOriginals = [
-        ...staticOriginalChapters,
-        ...originalChapters
-            .filter((ch) => ch.slug !== "last-dusk" && ch.slug !== "epilogue")
-            .map((ch, idx) => ({
-                href: `/${ch.slug}`,
-                label: ch.title,
-                code: `O-${idx + 1}`,
-                category: `Chapter ${ch.chapter_order}`,
-            })),
-    ];
-
-    const allCustoms = customChapters.map((ch, idx) => ({
-        href: `/u/${user?.uid}/${ch.slug}`,
-        label: ch.title,
-        code: `C-${idx + 1}`,
-        category: `Chapter ${ch.chapter_order}`,
-    }));
 
     const renderChapterLink = (item: {
         href: string;
