@@ -1,28 +1,23 @@
 import Head from "next/head";
 import { useState } from "react";
 import { motion, useReducedMotion, Variants } from "motion/react";
-import { Cormorant_Garamond, Crimson_Text } from "next/font/google";
+import { cormorant, crimsonText } from "@/config/nextFonts";
+import Link from "next/link";
+import Image from "next/image";
 
-const headingFont = Cormorant_Garamond({
-    subsets: ["latin"],
-    weight: ["500", "600", "700"],
-});
-
-const bodyFont = Crimson_Text({
-    subsets: ["latin"],
-    weight: ["400", "600"],
-});
+const headingFont = cormorant;
+const bodyFont = crimsonText;
 
 const tomeScript = [
-    "The mists remember.",
-    "Within these pages are moments preserved against the censure of time.",
-    "Read with care, for every memory carries a price, and not every truth wishes to be uncovered.",
+    "The Living Tome is a digital companion for Dungeon Masters running Curse of Strahd and the Interactive Tome of Strahd mod.",
+    "It gives you a book-like interface to present campaign lore to your players, replacing static PDF handouts with something you can update mid-campaign.",
+    "Create, edit, hide, or reveal chapters as your party uncovers Barovia's history, then share a link so your players can read along.",
 ];
 
-const clues = [
-    "Sacrifice opens every door worth entering.",
-    "Memory is both prison and key.",
-    "Leave no chapter unread.",
+const features = [
+    "Author custom chapters from your DM dashboard",
+    "Publish a shareable link for your players to read",
+    "Reveal or hide chapters as your campaign unfolds",
 ];
 
 // Fade in animation constants
@@ -44,7 +39,7 @@ const paragraphVariants: Variants = {
         y: 0,
         transition: {
             duration: 2.0,
-            ease: [0.22, 1, 0.36, 1], // TypeScript now knows this is a cubic bezier tuple
+            ease: [0.22, 1, 0.36, 1], // cubic bezier tuple for "fade in" effect
         },
     },
 };
@@ -59,7 +54,7 @@ export default function Home() {
                 <title>The Living Tome</title>
                 <meta
                     name="description"
-                    content="An animated D&D tome page that writes itself with invisible ink."
+                    content="A digital companion for Dungeon Masters running Curse of Strahd — publish and share custom campaign chapters with your players."
                 />
             </Head>
 
@@ -119,9 +114,25 @@ export default function Home() {
                         <div className="mb-5 flex flex-wrap items-center justify-between gap-4 px-2 text-[0.7rem] uppercase tracking-[0.45em] text-foreground-soft sm:px-4">
                             <div className="flex items-center gap-3">
                                 <span className="h-2.5 w-2.5 rounded-full red-dot-glow" />
-                                <span>Curse of Strahd</span>
+                                <span>Curse of Strahd Digital Companion</span>
                             </div>
-                            <span>Open a leaf to reveal the chapter</span>
+                            <span>
+                                <a
+                                    href="https://github.com/leecarin/living-tome"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="transition-colors hover:text-foreground"
+                                    aria-label="View repository on Github"
+                                >
+                                    <Image
+                                        src="/github-logo-white.svg"
+                                        alt="Github Logo"
+                                        width={22}
+                                        height={22}
+                                        aria-hidden="true"
+                                    />
+                                </a>
+                            </span>
                         </div>
 
                         {/* Outer Dark Cover */}
@@ -158,7 +169,7 @@ export default function Home() {
                                         <div className="space-y-6">
                                             <div className="flex items-center gap-3 text-[0.68rem] uppercase tracking-[0.42em] text-[#8c7457]">
                                                 <span className="h-px flex-1 bg-[#b5a382]" />
-                                                Marginalia
+                                                What This Is
                                             </div>
                                             <div className="space-y-4">
                                                 <h1
@@ -167,11 +178,19 @@ export default function Home() {
                                                     The Living Tome
                                                 </h1>
                                                 <p className="max-w-[26rem] text-l leading-8 text-ink/85 sm:text-xl">
-                                                    Within these pages lie
-                                                    fragments of a life
-                                                    stretched across centuries.
-                                                    Read carefully—for memory is
-                                                    seldom truthful in Barovia.
+                                                    A digital companion for
+                                                    Dungeon Masters running the{" "}
+                                                    <span>
+                                                        <a href="https://www.dmsguild.com/en/product/301867/the-interactive-tome-of-strahd">
+                                                            Interactive Curse of
+                                                            Strahd
+                                                        </a>
+                                                    </span>{" "}
+                                                    mod by The Aciduous
+                                                    Adventurer, built to replace
+                                                    static handouts with
+                                                    chapters you can update as
+                                                    your campaign evolves.
                                                 </p>
                                             </div>
                                         </div>
@@ -179,13 +198,13 @@ export default function Home() {
                                         <div className="space-y-4 border-t border-[#c2b08d]/80 pt-6">
                                             <div className="flex items-center gap-3 text-[0.72rem] uppercase tracking-[0.35em] text-[#8c7457]">
                                                 <span className="h-px flex-1 bg-[#b5a382]" />
-                                                Field notes
+                                                What You Can Do
                                             </div>
                                             <ul className="space-y-3">
-                                                {clues.map(
-                                                    (clue, clueIndex) => (
+                                                {features.map(
+                                                    (feature, clueIndex) => (
                                                         <motion.li
-                                                            key={clue}
+                                                            key={feature}
                                                             className="flex items-start gap-3 text-base leading-7 text-[#4a3828]"
                                                             initial={{
                                                                 opacity: 0,
@@ -203,7 +222,9 @@ export default function Home() {
                                                             }}
                                                         >
                                                             <span className="mt-2 h-2 w-2 rounded-full bg-[var(--blood)] shadow-[0_0_0_3px_rgba(136,19,55,0.2)]" />
-                                                            <span>{clue}</span>
+                                                            <span>
+                                                                {feature}
+                                                            </span>
                                                         </motion.li>
                                                     ),
                                                 )}
@@ -225,12 +246,12 @@ export default function Home() {
                                         <div className="mb-6 flex items-start justify-between gap-4">
                                             <div>
                                                 <p className="text-[0.68rem] uppercase tracking-[0.42em] text-[#8c7457]">
-                                                    Home Page
+                                                    Get Started
                                                 </p>
                                                 <h2
                                                     className={`${headingFont.className} mt-2 text-4xl leading-tight font-semibold tracking-tight text-ink sm:text-5xl`}
                                                 >
-                                                    The page remembers.
+                                                    Built for your table.
                                                 </h2>
                                             </div>
 
@@ -253,8 +274,8 @@ export default function Home() {
                                                         : { scale: 0.98 }
                                                 }
                                             >
-                                                <span>Refresh</span>
-                                                <span>Ink</span>
+                                                <span>Restart</span>
+                                                <span>Animation</span>
                                             </motion.button>
                                         </div>
 
@@ -285,15 +306,14 @@ export default function Home() {
                                                 )}
                                             </motion.div>
 
-                                            <div className="flex flex-wrap items-center justify-between gap-4 border-t border-[#c2b08d]/80 pt-5 text-[0.78rem] uppercase tracking-[0.32em] text-[#8c7457]">
-                                                <span>
-                                                    Speak softly. The page is
-                                                    listening.
-                                                </span>
-                                                <span>
-                                                    Touch the button to restart
-                                                    the spell.
-                                                </span>
+                                            <div className="flex flex-wrap items-center gap-4 text-[0.78rem] uppercase tracking-[0.32em] text-[#8c7457]">
+                                                <Link
+                                                    href="/auth"
+                                                    className="btn-parchment"
+                                                >
+                                                    <span>Create</span>
+                                                    <span>Account</span>
+                                                </Link>
                                             </div>
                                         </div>
                                     </div>
