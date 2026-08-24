@@ -138,11 +138,11 @@ Contributions, feedback, and feature requests are welcome! If you find a bug or 
 
 1. Open an issue describing the bug or feature request.
 
-2. Fork the repository and create a feature branch (git checkout -b feature/amazing-feature).
+2. Fork the repository and create a feature branch (`git checkout -b feature/amazing-feature`).
 
-3. Commit your changes (git commit -m 'Add amazing feature').
+3. Commit your changes (`git commit -m 'Add amazing feature'`).
 
-4. Push to the branch (git push origin feature/amazing-feature).
+4. Push to the branch (`git push origin feature/amazing-feature`).
 
 5. Open a Pull Request.
 
